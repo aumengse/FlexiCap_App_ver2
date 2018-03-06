@@ -58,13 +58,13 @@ namespace FlexiCap_App_ver2
             OpenFileDialog openfile_browse_icbs = new OpenFileDialog();
 
             openfile_browse.InitialDirectory = @"C:\";
-            openfile_browse_icbs.Title = "Browse Database";
+            openfile_browse_icbs.Title = "Browse Text File";
 
             openfile_browse.CheckFileExists = true;
             openfile_browse_icbs.CheckPathExists = true;
 
-            openfile_browse.DefaultExt = "accdb";
-            openfile_browse.Filter = "Access files (*.accdb)|*.accdb";
+            openfile_browse.DefaultExt = "txt";
+            openfile_browse.Filter = "Text files (*.txt)|*.txt";
             openfile_browse.FilterIndex = 2;
             openfile_browse.RestoreDirectory = true;
 
