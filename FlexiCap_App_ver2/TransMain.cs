@@ -60,8 +60,19 @@ namespace FlexiCap_App_ver2
 
         private void matchingToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            Main_Process mp = new Main_Process();
+            Import_Match mp = new Import_Match();
             mp.Show();
-        } 
+        }
+
+        private void archiveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void importedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            View_Imported vi = new View_Imported();
+            vi.Show();
+        }
     }
 }

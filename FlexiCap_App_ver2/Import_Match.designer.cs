@@ -1,6 +1,6 @@
 ﻿namespace FlexiCap_App_ver2
 {
-    partial class Main_Process
+    partial class Import_Match
     {
         /// <summary>
         /// Required designer variable.

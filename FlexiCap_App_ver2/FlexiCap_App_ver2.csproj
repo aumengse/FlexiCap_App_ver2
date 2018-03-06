@@ -31,6 +31,49 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>etsi.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -46,14 +89,38 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="conf.cs" />
-    <Compile Include="Main_Process.cs">
+    <Compile Include="Archive_View.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Main_Process.designer.cs">
-      <DependentUpon>Main_Process.cs</DependentUpon>
+    <Compile Include="Archive_View.designer.cs">
+      <DependentUpon>Archive_View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Archiving_Trans.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Archiving_Trans.designer.cs">
+      <DependentUpon>Archiving_Trans.cs</DependentUpon>
+    </Compile>
+    <Compile Include="conf.cs" />
+    <Compile Include="Initialize_DB.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Initialize_DB.designer.cs">
+      <DependentUpon>Initialize_DB.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Import_Match.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Import_Match.designer.cs">
+      <DependentUpon>Import_Match.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="Progress_Bar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Progress_Bar.designer.cs">
+      <DependentUpon>Progress_Bar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Summary_View.cs">
       <SubType>Form</SubType>
@@ -67,8 +134,26 @@
     <Compile Include="TransMain.designer.cs">
       <DependentUpon>TransMain.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Main_Process.resx">
-      <DependentUpon>Main_Process.cs</DependentUpon>
+    <Compile Include="View_Imported.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View_Imported.designer.cs">
+      <DependentUpon>View_Imported.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Archive_View.resx">
+      <DependentUpon>Archive_View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Archiving_Trans.resx">
+      <DependentUpon>Archiving_Trans.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Initialize_DB.resx">
+      <DependentUpon>Initialize_DB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Import_Match.resx">
+      <DependentUpon>Import_Match.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Progress_Bar.resx">
+      <DependentUpon>Progress_Bar.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -85,6 +170,9 @@
     <EmbeddedResource Include="TransMain.resx">
       <DependentUpon>TransMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="View_Imported.resx">
+      <DependentUpon>View_Imported.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -97,6 +185,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="etsi.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
