@@ -74,5 +74,17 @@ namespace FlexiCap_App_ver2
             View_Imported vi = new View_Imported();
             vi.Show();
         }
+
+        private void configurationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Setup_form sf = new Setup_form();
+            sf.ShowDialog();
+        }
+
+        private void summaryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Summary_View sv = new Summary_View();
+            sv.Show();
+        }
     }
 }

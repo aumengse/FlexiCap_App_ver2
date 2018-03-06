@@ -34,19 +34,19 @@
             this.initializeDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.setUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.matchingCriteriaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.matchedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.unmatchedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.archivedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.matchingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.archiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.matchedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unmatchedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.importedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.matchedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.unmatchedToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.archivedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.summaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,27 +90,22 @@
             // setUpToolStripMenuItem
             // 
             this.setUpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importSettingsToolStripMenuItem,
-            this.matchingCriteriaToolStripMenuItem});
+            this.configurationToolStripMenuItem});
             this.setUpToolStripMenuItem.Name = "setUpToolStripMenuItem";
             this.setUpToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.setUpToolStripMenuItem.Text = "SetUp";
             // 
-            // importSettingsToolStripMenuItem
+            // configurationToolStripMenuItem
             // 
-            this.importSettingsToolStripMenuItem.Name = "importSettingsToolStripMenuItem";
-            this.importSettingsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.importSettingsToolStripMenuItem.Text = "Import Settings";
-            // 
-            // matchingCriteriaToolStripMenuItem
-            // 
-            this.matchingCriteriaToolStripMenuItem.Name = "matchingCriteriaToolStripMenuItem";
-            this.matchingCriteriaToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.matchingCriteriaToolStripMenuItem.Text = "Matching Criteria";
+            this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
+            this.configurationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.configurationToolStripMenuItem.Text = "Configuration";
+            this.configurationToolStripMenuItem.Click += new System.EventHandler(this.configurationToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.summaryToolStripMenuItem,
             this.importedToolStripMenuItem1,
             this.matchedToolStripMenuItem1,
             this.unmatchedToolStripMenuItem1,
@@ -118,6 +113,31 @@
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "View";
+            // 
+            // importedToolStripMenuItem1
+            // 
+            this.importedToolStripMenuItem1.Name = "importedToolStripMenuItem1";
+            this.importedToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.importedToolStripMenuItem1.Text = "Imported";
+            this.importedToolStripMenuItem1.Click += new System.EventHandler(this.importedToolStripMenuItem1_Click);
+            // 
+            // matchedToolStripMenuItem1
+            // 
+            this.matchedToolStripMenuItem1.Name = "matchedToolStripMenuItem1";
+            this.matchedToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.matchedToolStripMenuItem1.Text = "Matched";
+            // 
+            // unmatchedToolStripMenuItem1
+            // 
+            this.unmatchedToolStripMenuItem1.Name = "unmatchedToolStripMenuItem1";
+            this.unmatchedToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.unmatchedToolStripMenuItem1.Text = "Unmatched";
+            // 
+            // archivedToolStripMenuItem
+            // 
+            this.archivedToolStripMenuItem.Name = "archivedToolStripMenuItem";
+            this.archivedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.archivedToolStripMenuItem.Text = "Archived";
             // 
             // actionsToolStripMenuItem
             // 
@@ -157,30 +177,12 @@
             this.unmatchedToolStripMenuItem.Name = "unmatchedToolStripMenuItem";
             this.unmatchedToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
-            // importedToolStripMenuItem1
+            // summaryToolStripMenuItem
             // 
-            this.importedToolStripMenuItem1.Name = "importedToolStripMenuItem1";
-            this.importedToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.importedToolStripMenuItem1.Text = "Imported";
-            this.importedToolStripMenuItem1.Click += new System.EventHandler(this.importedToolStripMenuItem1_Click);
-            // 
-            // matchedToolStripMenuItem1
-            // 
-            this.matchedToolStripMenuItem1.Name = "matchedToolStripMenuItem1";
-            this.matchedToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.matchedToolStripMenuItem1.Text = "Matched";
-            // 
-            // unmatchedToolStripMenuItem1
-            // 
-            this.unmatchedToolStripMenuItem1.Name = "unmatchedToolStripMenuItem1";
-            this.unmatchedToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
-            this.unmatchedToolStripMenuItem1.Text = "Unmatched";
-            // 
-            // archivedToolStripMenuItem
-            // 
-            this.archivedToolStripMenuItem.Name = "archivedToolStripMenuItem";
-            this.archivedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.archivedToolStripMenuItem.Text = "Archived";
+            this.summaryToolStripMenuItem.Name = "summaryToolStripMenuItem";
+            this.summaryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.summaryToolStripMenuItem.Text = "Summary";
+            this.summaryToolStripMenuItem.Click += new System.EventHandler(this.summaryToolStripMenuItem_Click);
             // 
             // TransMain
             // 
@@ -214,13 +216,13 @@
         private System.Windows.Forms.ToolStripMenuItem unmatchedToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem initializeDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem setUpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem importSettingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem matchingCriteriaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem matchingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importedToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem matchedToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem unmatchedToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem archivedToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem configurationToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem summaryToolStripMenuItem;
     }
 }
 

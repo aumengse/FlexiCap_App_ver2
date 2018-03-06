@@ -114,7 +114,52 @@ namespace FlexiCap_App_ver2
 
         }
 
-      
+        private void get_data(string table_name)
+        {
+            try
+            {
+                conString();
+                con.Open();
+                OleDbCommand cmd = new OleDbCommand();
+                cmd.CommandText = "SELECT trans_date,acct_name,acct_num,amount,trans_code FROM [" + table_name + "] where is_import=" + false + "";
+                cmd.Connection = con;
+               
+                OleDbDataAdapter da = new OleDbDataAdapter(cmd);
+                DataSet ds = new DataSet();
+                da.Fill(ds);
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void mark_imported_data(string table_name, string acct_num)
+        {
+            string cmd = "";
+            try
+            {
+                conString();
+                con.Open();
+                if (!string.IsNullOrWhiteSpace(acct_num))
+                {
+                    cmd = "update [" + table_name + "] set is_import=" + true + " where acct_num='" + acct_num + "'";
+                }
+
+                OleDbCommand command = new OleDbCommand(cmd, con);
+                OleDbDataReader rdr = command.ExecuteReader();
+
+                con.Close();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void matching_ICBS()
         {
             conString();

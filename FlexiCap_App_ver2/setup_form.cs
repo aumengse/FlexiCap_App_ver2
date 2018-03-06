@@ -11,11 +11,11 @@ using System.Data.OleDb;
 
 namespace FlexiCap_App_ver2
 {
-    public partial class setup_form : Form
+    public partial class Setup_form : Form
     {
         private OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
         private Conf.conf dbcon;
-        public setup_form()
+        public Setup_form()
         {
             InitializeComponent();
         }

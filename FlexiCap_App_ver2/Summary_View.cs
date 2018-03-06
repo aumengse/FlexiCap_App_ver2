@@ -77,9 +77,9 @@ namespace FlexiCap_App_ver2
                 con.Close();
 
             }
-            catch (Exception e)
+            catch
             {
-                MessageBox.Show(e.Message);
+                //MessageBox.Show("No Results Found");
             }
 
         }
@@ -108,9 +108,9 @@ namespace FlexiCap_App_ver2
                 con.Close();
 
             }
-            catch (Exception e)
+            catch 
             {
-                MessageBox.Show(e.Message);
+                //MessageBox.Show(e.Message);
             }
         }
 
@@ -173,10 +173,10 @@ namespace FlexiCap_App_ver2
 
 
             }
-            catch(Exception e)
+            catch
             {
                 //MessageBox.Show("No Result found.","Information",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                MessageBox.Show(e.Message);
+                //MessageBox.Show(e.Message);
             }
         }
         private void sum_breakdown(string table_name, string trans_code)

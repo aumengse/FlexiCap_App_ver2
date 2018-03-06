@@ -1,6 +1,6 @@
 ﻿namespace FlexiCap_App_ver2
 {
-    partial class setup_form
+    partial class Setup_form
     {
         /// <summary>
         /// Required designer variable.
