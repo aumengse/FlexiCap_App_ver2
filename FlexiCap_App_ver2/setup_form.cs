@@ -79,8 +79,27 @@ namespace FlexiCap_App_ver2
                 tb_icbs_source.Text = openfile_browse.FileName;
             }
         }
+        private void update_settings()
+        {
+            conString();
+            try
+            {
+                //OleDbConnection con = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\PC-23\Desktop\TVVS.accdb; Persist Security Info=False;");
+                conString();
+                con.Open();
+                string cmd = "update settings set trans_code=" + chk_tran_code.Checked + ", acct_name=" + chk_acct_name.Checked + ", acct_num=" + chk_acct_num.Checked + ", amount=" + chk_amount.Checked + ", scanned_path='" + tb_scanned_source.Text + "', icbs_path='" + tb_icbs_source.Text + "'";
+                OleDbCommand command = new OleDbCommand(cmd, con);
+                OleDbDataReader rdr = command.ExecuteReader();
+                con.Close();
+                MessageBox.Show("Save Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
-        private void btn_save_Click(object sender, EventArgs e)
+        private void insert_settings()
         {
             conString();
             try
@@ -96,7 +115,82 @@ namespace FlexiCap_App_ver2
                 cmd.Parameters.AddWithValue("@icbs_path", tb_icbs_source.Text);
                 cmd.ExecuteNonQuery();
                 con.Close();
-                MessageBox.Show("Success");
+                MessageBox.Show("Save Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private static string data_counter(string table_name)
+        {
+            int counter = 0;
+            OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
+            Conf.conf dbcon;
+            con = new OleDbConnection();
+            dbcon = new Conf.conf();
+            con.ConnectionString = dbcon.getConnectionString();
+            try
+            {
+                con.Open();
+                string cmd = "SELECT * FROM "+table_name+"";
+                {
+                    OleDbCommand command = new OleDbCommand(cmd, con);
+                    OleDbDataReader rdr = command.ExecuteReader();
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            //trans_code = rdr.GetValue(1).ToString();
+                            counter += 1; 
+                        }
+                    }
+                }
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return counter.ToString();
+        }
+        private void btn_save_Click(object sender, EventArgs e)
+        {
+            if (Convert.ToInt32(data_counter("settings")) > 0)
+            {
+                update_settings();
+            }
+            else
+            {
+                insert_settings();
+            }
+        }
+
+        private void setup_form_Load(object sender, EventArgs e)
+        {
+            conString();
+            try
+            {
+                con.Open();
+                string cmd = "SELECT * FROM settings";
+                {
+                    OleDbCommand command = new OleDbCommand(cmd, con);
+                    OleDbDataReader rdr = command.ExecuteReader();
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            chk_tran_code.Checked = Convert.ToBoolean(rdr.GetValue(1).ToString());
+                            chk_acct_name.Checked = Convert.ToBoolean(rdr.GetValue(2).ToString());
+                            chk_acct_num.Checked = Convert.ToBoolean(rdr.GetValue(3).ToString());
+                            chk_amount.Checked = Convert.ToBoolean(rdr.GetValue(4).ToString());
+                            tb_scanned_source.Text = rdr.GetValue(5).ToString();
+                            tb_icbs_source.Text = rdr.GetValue(6).ToString();
+                        }
+                    }
+                }
+                con.Close();
             }
             catch (Exception ex)
             {

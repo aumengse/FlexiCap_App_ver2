@@ -189,7 +189,9 @@
             this.Controls.Add(this.chk_acct_name);
             this.Controls.Add(this.chk_tran_code);
             this.Name = "setup_form";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "setup_form";
+            this.Load += new System.EventHandler(this.setup_form_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
