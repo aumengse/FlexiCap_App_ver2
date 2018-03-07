@@ -52,8 +52,8 @@ namespace FlexiCap_App_ver2
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to initialize database? ", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (dialogResult == DialogResult.Yes)
             {
-                //Initialize_DB in_db = new Initialize_DB();
-                //in_db.Show();
+                Initialize_DB in_db = new Initialize_DB();
+                in_db.Show();
             }
             
         }

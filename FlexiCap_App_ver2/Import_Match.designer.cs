@@ -40,7 +40,9 @@
             this.lbl_check3 = new System.Windows.Forms.Label();
             this.lbl_check2 = new System.Windows.Forms.Label();
             this.lbl_check1 = new System.Windows.Forms.Label();
+            this.dg_data_imported = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dg_data_imported)).BeginInit();
             this.SuspendLayout();
             // 
             // label3
@@ -160,22 +162,32 @@
             this.lbl_check1.TabIndex = 3;
             this.lbl_check1.Text = "✓";
             // 
-            // Main_Process
+            // dg_data_imported
+            // 
+            this.dg_data_imported.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dg_data_imported.Location = new System.Drawing.Point(39, 257);
+            this.dg_data_imported.Name = "dg_data_imported";
+            this.dg_data_imported.Size = new System.Drawing.Size(240, 150);
+            this.dg_data_imported.TabIndex = 7;
+            // 
+            // Import_Match
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(647, 376);
+            this.Controls.Add(this.dg_data_imported);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lbl_percent);
             this.Controls.Add(this.pbar);
             this.Controls.Add(this.btn_cancel);
             this.Controls.Add(this.lbl_warning);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "Main_Process";
+            this.Name = "Import_Match";
             this.Text = "Import and Match Transactions";
             this.Load += new System.EventHandler(this.Main_Process_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dg_data_imported)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -194,5 +206,6 @@
         private System.Windows.Forms.Label lbl_check3;
         private System.Windows.Forms.Label lbl_check2;
         private System.Windows.Forms.Label lbl_check1;
+        private System.Windows.Forms.DataGridView dg_data_imported;
     }
 }
