@@ -51,13 +51,17 @@ namespace FlexiCap_App_ver2
                     e.Cancel = true;
                 }
                 else if (i == 10)
-                {
-                    
+                {                    
                     label1.Invoke( new Action(() => label1.Visible = true));
+                    get_data_SCANNED("depo_slip");
+                    inserting("depo_slip");
+                    get_data_SCANNED("with_slip");
+                    inserting("with_slip");
+                    lbl_check1.Invoke(new Action(() => lbl_check1.Visible = true));
                 }
                 else if (i == 40)
                 {
-                    lbl_check1.Invoke(new Action (() => lbl_check1.Visible = true));
+
                     label2.Invoke(new Action(() => label2.Visible = true));
                 }
                 else if (i == 70)
@@ -114,44 +118,143 @@ namespace FlexiCap_App_ver2
 
         }
 
-        private void get_data(string table_name)
+        public string db_location()
         {
+            string holder = "";
+            conString();
+
+            string cmd = "SELECT scanned_path from settings";
+            {
+                con.Open();
+                OleDbCommand command = new OleDbCommand(cmd, con);
+                OleDbDataReader rdr = command.ExecuteReader();
+                rdr.Read();
+                
+                    holder = rdr.GetValue(0).ToString();
+                con.Close();
+            }
+            return holder;
+        }
+
+
+        public void get_data_SCANNED(string table_name)
+        {
+
+
             try
             {
-                conString();
-                con.Open();
-                OleDbCommand cmd = new OleDbCommand();
-                cmd.CommandText = "SELECT trans_date,acct_name,acct_num,amount,trans_code FROM [" + table_name + "] where is_import=" + false + "";
-                cmd.Connection = con;
-               
-                OleDbDataAdapter da = new OleDbDataAdapter(cmd);
+                OleDbConnection impt_con = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + db_location() + "; Persist Security Info=False;");
+                impt_con.Open();
+                OleDbCommand select_cmd = new OleDbCommand();
+                select_cmd.CommandText = "SELECT trans_date,acct_name,acct_num,amount,trans_code FROM [" + table_name + "] where is_import=" + false + "";
+                select_cmd.Connection = impt_con;
+
+                OleDbDataAdapter da = new OleDbDataAdapter(select_cmd);
                 DataSet ds = new DataSet();
                 da.Fill(ds);
 
+                dg_data_imported.Invoke(new Action(() => dg_data_imported.DataSource = ds.Tables[0]));
+                impt_con.Close();
+
+                //MessageBox.Show("IMPORTED");
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("GET DATA:" + ex.Message);
             }
+        }
+
+        private void inserting(string table_name)
+        {
+            string date_string;
+            DateTime? date_x = null;
+            conString();
+
+            try
+            {
+                foreach (DataGridViewRow row in dg_data_imported.Rows)
+                {
+                    string is_emp_date = row.Cells[0].Value.ToString();
+                    if (!string.IsNullOrWhiteSpace(is_emp_date))
+                    {
+                        date_string = DateTime.Parse(row.Cells[0].Value.ToString()).ToString("MM/dd/yyyy");
+                        date_x = DateTime.Parse(date_string);
+                    }
+                    //con.Close();
+                    con.Open();
+
+                    String query = "INSERT INTO scanned_trans (trans_date,acct_name,acct_num,amount,trans_code) VALUES(@trans_date, @acct_name, @acct_num, @amount, @trans_code)";
+                    OleDbCommand cmd = new OleDbCommand(query, con);
+                    if (!string.IsNullOrWhiteSpace(is_emp_date))
+                    {
+                        cmd.Parameters.AddWithValue("@trans_date", date_x); // set parameterized query @a to fname parameter
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@trans_date", DBNull.Value); // set parameterized query @a to fname parameter
+                    }
+                    if (!string.IsNullOrWhiteSpace(row.Cells[1].Value.ToString()))
+                    {
+                        cmd.Parameters.AddWithValue("@acct_name", row.Cells[1].Value.ToString()); // set parameterized query @b to mname parameter
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@acct_name", DBNull.Value); // set parameterized query @b to mname parameter
+                    }
+                    cmd.Parameters.AddWithValue("@acct_num", row.Cells[2].Value.ToString());
+                    if (!string.IsNullOrWhiteSpace(row.Cells[3].Value.ToString()))
+                    {
+                        cmd.Parameters.AddWithValue("@amount", double.Parse(row.Cells[3].Value.ToString()));
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@amount", DBNull.Value);
+                    }
+                    cmd.Parameters.AddWithValue("@trans_code", row.Cells[4].Value.ToString());
+                    if (table_name == "depo_slip")
+                    {
+                        mark_imported_data("depo_slip", row.Cells[2].Value.ToString());
+                    }
+                    else
+                    {
+                        mark_imported_data("with_slip", row.Cells[2].Value.ToString());
+                    }
+
+                    //if (row is null)
+                    //{
+                    //    break;
+                    //}
+
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show("INSERTING: "+e.Message);
+            }
+           
+
         }
 
         private void mark_imported_data(string table_name, string acct_num)
         {
-            string cmd = "";
+            string cmds = "";
+            OleDbConnection cons = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + db_location() + "; Persist Security Info=False;");
             try
             {
-                conString();
-                con.Open();
+                cons.Open();
                 if (!string.IsNullOrWhiteSpace(acct_num))
                 {
-                    cmd = "update [" + table_name + "] set is_import=" + true + " where acct_num='" + acct_num + "'";
+                    cmds = "update [" + table_name + "] set is_import=" + true + " where acct_num='" + acct_num + "'";
                 }
 
-                OleDbCommand command = new OleDbCommand(cmd, con);
-                OleDbDataReader rdr = command.ExecuteReader();
+                OleDbCommand commands = new OleDbCommand(cmds, cons);
+                OleDbDataReader redr = commands.ExecuteReader();
 
-                con.Close();
+                cons.Close();
 
             }
             catch (Exception ex)
