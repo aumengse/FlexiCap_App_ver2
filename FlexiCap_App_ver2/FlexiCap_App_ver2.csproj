@@ -114,6 +114,12 @@
     <Compile Include="Import_Match.designer.cs">
       <DependentUpon>Import_Match.cs</DependentUpon>
     </Compile>
+    <Compile Include="Match_View.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Match_View.Designer.cs">
+      <DependentUpon>Match_View.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Progress_Bar.cs">
       <SubType>Component</SubType>
@@ -122,6 +128,12 @@
       <DependentUpon>Progress_Bar.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="sample_picture.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="sample_picture.Designer.cs">
+      <DependentUpon>sample_picture.cs</DependentUpon>
+    </Compile>
     <Compile Include="Setup_form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,6 +158,12 @@
     <Compile Include="View_Imported.designer.cs">
       <DependentUpon>View_Imported.cs</DependentUpon>
     </Compile>
+    <Compile Include="View_Match_Selected_Data.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View_Match_Selected_Data.Designer.cs">
+      <DependentUpon>View_Match_Selected_Data.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Archive_View.resx">
       <DependentUpon>Archive_View.cs</DependentUpon>
     </EmbeddedResource>
@@ -157,6 +175,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Import_Match.resx">
       <DependentUpon>Import_Match.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Match_View.resx">
+      <DependentUpon>Match_View.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Progress_Bar.resx">
       <DependentUpon>Progress_Bar.cs</DependentUpon>
@@ -170,6 +191,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="sample_picture.resx">
+      <DependentUpon>sample_picture.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Setup_form.resx">
       <DependentUpon>Setup_form.cs</DependentUpon>
     </EmbeddedResource>
@@ -181,6 +205,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View_Imported.resx">
       <DependentUpon>View_Imported.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View_Match_Selected_Data.resx">
+      <DependentUpon>View_Match_Selected_Data.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
