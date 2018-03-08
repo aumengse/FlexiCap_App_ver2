@@ -86,5 +86,11 @@ namespace FlexiCap_App_ver2
             Summary_View sv = new Summary_View();
             sv.Show();
         }
+
+        private void matchedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Match_View mv = new Match_View();
+            mv.ShowDialog();
+        }
     }
 }

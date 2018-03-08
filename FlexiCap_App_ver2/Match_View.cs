@@ -157,6 +157,11 @@ namespace FlexiCap_App_ver2
 
         private void Matched_Records_DoubleClick(object sender, EventArgs e)
         {
+            foreach (ListViewItem listItem in Matched_Records.Items)
+            {
+                listItem.Checked = false;
+            }
+
             string acct_name = Matched_Records.SelectedItems[0].SubItems[2].Text;
             string acct_number = Matched_Records.SelectedItems[0].SubItems[3].Text;
             string amount = Matched_Records.SelectedItems[0].SubItems[4].Text;

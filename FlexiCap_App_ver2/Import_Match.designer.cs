@@ -170,6 +170,7 @@
             this.dg_data_imported.Name = "dg_data_imported";
             this.dg_data_imported.Size = new System.Drawing.Size(240, 150);
             this.dg_data_imported.TabIndex = 7;
+            this.dg_data_imported.Visible = false;
             // 
             // button1
             // 
