@@ -152,6 +152,12 @@
     <Compile Include="TransMain.designer.cs">
       <DependentUpon>TransMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Unmatch_View.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Unmatch_View.Designer.cs">
+      <DependentUpon>Unmatch_View.cs</DependentUpon>
+    </Compile>
     <Compile Include="View_Imported.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -202,6 +208,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TransMain.resx">
       <DependentUpon>TransMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Unmatch_View.resx">
+      <DependentUpon>Unmatch_View.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View_Imported.resx">
       <DependentUpon>View_Imported.cs</DependentUpon>
