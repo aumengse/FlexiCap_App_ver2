@@ -17,6 +17,13 @@ namespace FlexiCap_App_ver2
     {
         private OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
         private Conf.conf dbcon;
+        public bool trans_code { get; set; }
+        public bool acct_name { get; set; }
+        public bool acct_num { get; set; }
+        public bool amount { get; set; }
+        private DataSet ds = new DataSet();
+        private DataSet dsu = new DataSet();
+
         public Import_Match()
         {
             InitializeComponent();
@@ -46,6 +53,7 @@ namespace FlexiCap_App_ver2
         { 
             for (int i = 0; i <= 100; i+=2)
             {
+                Thread.Sleep(100);
                 if (bg_worker.CancellationPending)
                 {
                     e.Cancel = true;
@@ -54,29 +62,34 @@ namespace FlexiCap_App_ver2
                 {                    
                     label1.Invoke( new Action(() => label1.Visible = true));
                     get_data_SCANNED("depo_slip");
-                    inserting("depo_slip");
+                    inserting_SCANNED("depo_slip");
+
                     get_data_SCANNED("with_slip");
-                    inserting("with_slip");
+                    inserting_SCANNED("with_slip");
+
                     lbl_check1.Invoke(new Action(() => lbl_check1.Visible = true));
+                    label2.Invoke(new Action(() => label2.Visible = true));
+                    bg_worker.ReportProgress(i);
                 }
                 else if (i == 40)
                 {
-
-                    label2.Invoke(new Action(() => label2.Visible = true));
-                }
-                else if (i == 70)
-                {
+                    inserting_ICBS();
                     lbl_check2.Invoke(new Action(() => lbl_check2.Visible = true));
-                    matching_ICBS();
-                    matching_SCAN();
-                    unmatching_SCAN();
-                    unmatching_ICBS();
                     label3.Invoke(new Action(() => label3.Visible = true));
+                    bg_worker.ReportProgress(i);
+                }
+                else if (i == 60)
+                {
+
+                    matching_data();
+                    unmatching_data("scanned_trans","icbs_trans");
+                    unmatching_data("icbs_trans","scanned_trans");
+                    bg_worker.ReportProgress(i);
+
                 }
                 else 
                 {
-                    mainprocess();
-                    
+
                     bg_worker.ReportProgress(i);
 
                 }
@@ -107,30 +120,33 @@ namespace FlexiCap_App_ver2
             }
         }
 
-        private void mainprocess()
-        {
-            Thread.Sleep(100);
-        }
-
         public void display(string text)
         {
             MessageBox.Show(text);
 
         }
 
-        public string db_location()
+        public string db_location(string filepath)
         {
             string holder = "";
             conString();
 
-            string cmd = "SELECT scanned_path from settings";
+            string cmd = "SELECT scanned_path,icbs_path from settings";
             {
                 con.Open();
                 OleDbCommand command = new OleDbCommand(cmd, con);
                 OleDbDataReader rdr = command.ExecuteReader();
                 rdr.Read();
                 
+                if(filepath=="scanned_path")
+                {
                     holder = rdr.GetValue(0).ToString();
+                }
+                else
+                {
+                    holder = rdr.GetValue(1).ToString();
+                }
+                    
                 con.Close();
             }
             return holder;
@@ -139,11 +155,9 @@ namespace FlexiCap_App_ver2
 
         public void get_data_SCANNED(string table_name)
         {
-
-
             try
             {
-                OleDbConnection impt_con = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + db_location() + "; Persist Security Info=False;");
+                OleDbConnection impt_con = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + db_location("scanned_path") + "; Persist Security Info=False;");
                 impt_con.Open();
                 OleDbCommand select_cmd = new OleDbCommand();
                 select_cmd.CommandText = "SELECT trans_date,acct_name,acct_num,amount,trans_code FROM [" + table_name + "] where is_import=" + false + "";
@@ -165,7 +179,7 @@ namespace FlexiCap_App_ver2
             }
         }
 
-        private void inserting(string table_name)
+        private void inserting_SCANNED(string table_name)
         {
             string date_string;
             DateTime? date_x = null;
@@ -212,19 +226,17 @@ namespace FlexiCap_App_ver2
                         cmd.Parameters.AddWithValue("@amount", DBNull.Value);
                     }
                     cmd.Parameters.AddWithValue("@trans_code", row.Cells[4].Value.ToString());
+
+                    string acct_name = row.Cells[2].Value.ToString();
+
                     if (table_name == "depo_slip")
                     {
-                        mark_imported_data("depo_slip", row.Cells[2].Value.ToString());
+                        mark_imported_data("depo_slip", acct_name);
                     }
                     else
                     {
-                        mark_imported_data("with_slip", row.Cells[2].Value.ToString());
+                        mark_imported_data("with_slip", acct_name);
                     }
-
-                    //if (row is null)
-                    //{
-                    //    break;
-                    //}
 
                     cmd.ExecuteNonQuery();
                     con.Close();
@@ -233,7 +245,7 @@ namespace FlexiCap_App_ver2
             }
             catch(Exception e)
             {
-                MessageBox.Show("INSERTING: "+e.Message);
+                //MessageBox.Show("INSERTING: "+e.Message);
             }
            
 
@@ -242,9 +254,9 @@ namespace FlexiCap_App_ver2
         private void mark_imported_data(string table_name, string acct_num)
         {
             string cmds = "";
-            OleDbConnection cons = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + db_location() + "; Persist Security Info=False;");
             try
             {
+                OleDbConnection cons = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\FlexiCap_App_ver2\Test Data\scanned_trans_unmatch.accdb; Persist Security Info=False;");
                 cons.Open();
                 if (!string.IsNullOrWhiteSpace(acct_num))
                 {
@@ -263,175 +275,504 @@ namespace FlexiCap_App_ver2
             }
         }
 
-        private void matching_ICBS()
+
+        private void inserting_ICBS()
         {
             conString();
-            int i;
+            DateTime date;
+            string[] lines = System.IO.File.ReadAllLines(db_location("icbs_path").ToString());
+            
             try
             {
-
-                con.Open();
-                OleDbCommand cmd = new OleDbCommand();
-                cmd.CommandText = "SELECT icbs_trans.ID,scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON(icbs_trans.trans_code = scanned_trans.trans_code) " +
-                                "AND(icbs_trans.amount = scanned_trans.amount) AND(icbs_trans.acct_num = scanned_trans.acct_num) AND(icbs_trans.acct_name = scanned_trans.acct_name) AND(icbs_trans.trans_date = scanned_trans.trans_date);";
-                cmd.Connection = con;
-                OleDbDataAdapter da = new OleDbDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                da.Fill(ds);
-                con.Close();
-
-                foreach (DataTable dt in ds.Tables)
+                foreach (string line in lines) //read all records
                 {
-                    foreach (DataRow dr in dt.Rows)
-                    {
-                        con.Open();
-                        string nw_cmd = "UPDATE [icbs_trans] SET match_code='R', trans_src='ICBS', match_ref= " + dr["scanned_trans.id"] + " where id=" + dr["icbs_trans.id"] + "";
-                        {
+                    string[] col = line.Split(new char[] { ',' });
+                    string date_string = DateTime.Parse(col[1]).ToString("MM/dd/yyyy");
+                    date = DateTime.Parse(date_string);
 
-                            OleDbCommand nw_command = new OleDbCommand(nw_cmd, con);
-                            nw_command.ExecuteNonQuery();
-                            //MessageBox.Show("ICBS MATCHED Updated");
+                    con.Open();
 
-                        }
-                        con.Close();
-                        //MessageBox.Show(dr["id"].ToString());
+                    String query = "INSERT INTO icbs_trans (trans_code,trans_date,acct_name,acct_num,amount) VALUES(@code, @date, @acct_name, @acct_num, @amount)";
+                    OleDbCommand cmd = new OleDbCommand(query, con);
+                    cmd.Parameters.AddWithValue("@code", col[0]);
+                    cmd.Parameters.AddWithValue("@date", date); // set parameterized query @a to fname parameter
+                    cmd.Parameters.AddWithValue("@acct_name", col[2]); // set parameterized query @b to mname parameter
+                    cmd.Parameters.AddWithValue("@acct_num", col[3]);
+                    cmd.Parameters.AddWithValue("@amount", col[4]);
+                    cmd.ExecuteNonQuery();
+                    con.Close();
 
-                    }
                 }
             }
-
             catch (Exception ex)
             {
-                //MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message);
             }
+            //MessageBox.Show(" ICBS Import Successfully");
+
         }
 
-        private void matching_SCAN()
+        /// <summary>
+        /// /////////////////////////////////   MATCHING BEGINS HERE ~~~~~~~~~~~~~~
+        /// </summary>
+        /// 
+
+        private void get_bool()
         {
-            conString();
+            //bool trans_code, acct_name, acct_num, amount;
+            string cmd = "SELECT trans_code,acct_name,acct_num,amount from settings ";
+            {
+
+                con.Open();
+                OleDbCommand command = new OleDbCommand(cmd, con);
+                OleDbDataReader rdr = command.ExecuteReader();
+                rdr.Read();
+
+                trans_code = (bool)(rdr.GetValue(0));
+                acct_name = (bool)(rdr.GetValue(1));
+                acct_num = (bool)(rdr.GetValue(2));
+                amount = (bool)(rdr.GetValue(3));
+                con.Close();
+            }
+
+        }
+
+        private void matching_data()
+        {
+            
             try
             {
-                con.Open();
-                OleDbCommand cmd = new OleDbCommand();
-                cmd.CommandText = "SELECT scanned_trans.ID,icbs_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON(icbs_trans.trans_code = scanned_trans.trans_code) AND(icbs_trans.amount = scanned_trans.amount) " +
-                                   "AND(icbs_trans.acct_num = scanned_trans.acct_num) AND(icbs_trans.acct_name = scanned_trans.acct_name) AND(icbs_trans.trans_date = scanned_trans.trans_date);";
-                cmd.Connection = con;
-                OleDbDataAdapter da = new OleDbDataAdapter(cmd);
-                DataSet ds = new DataSet();
-                da.Fill(ds);
-                con.Close();
-
-                foreach (DataTable dt in ds.Tables)
-                {
-                    foreach (DataRow dr in dt.Rows)
+               
+                    //SINGLES
+                    if (trans_code == true & acct_name == false & acct_num == false & amount == false) //1000
                     {
                         con.Open();
-                        string nw_cmd = "UPDATE [scanned_trans] SET match_code='R', trans_src='SCAN', match_ref= " + dr["icbs_trans.id"] + " where id=" + dr["scanned_trans.id"] + "";
-                        {
-
-                            OleDbCommand nw_command = new OleDbCommand(nw_cmd, con);
-                            nw_command.ExecuteNonQuery();
-                            //MessageBox.Show("SCAN MATCHED Updated");
-
-                        }
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON icbs_trans.trans_code = scanned_trans.trans_code; ";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
                         con.Close();
-                        //MessageBox.Show(dr["id"].ToString());
+                    }
+                    else if (trans_code == false & acct_name == true & acct_num == false & amount == false) //0100
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON icbs_trans.acct_name = scanned_trans.acct_name;";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+                    else if (trans_code == false & acct_name == false & acct_num == true & amount == false) //0010
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON icbs_trans.acct_num = scanned_trans.acct_num;";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+                    else if (trans_code == false & acct_name == false & acct_num == false & amount == true) //0001
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON icbs_trans.amount = scanned_trans.amount;";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+                    //DOUBLES trans_code
+                    else if (trans_code == true & acct_name == true & acct_num == false & amount == false) //1100
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON (icbs_trans.acct_name = scanned_trans.acct_name) AND (icbs_trans.trans_code = scanned_trans.trans_code);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+                    else if (trans_code == true & acct_name == false & acct_num == true & amount == false) //1010
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON (icbs_trans.acct_num = scanned_trans.acct_num) AND (icbs_trans.trans_code = scanned_trans.trans_code);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+                    else if (trans_code == true & acct_name == false & acct_num == false & amount == true) //1001
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON (icbs_trans.amount = scanned_trans.amount) AND (icbs_trans.trans_code = scanned_trans.trans_code);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+
+                    //DOUBLES acct_name
+
+                    else if (trans_code == false & acct_name == true & acct_num == true & amount == false) //0110
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON(icbs_trans.acct_num = scanned_trans.acct_num) AND(icbs_trans.acct_name = scanned_trans.acct_name);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+                    else if (trans_code == false & acct_name == true & acct_num == false & amount == true) //0101
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON (icbs_trans.amount = scanned_trans.amount) AND (icbs_trans.acct_name = scanned_trans.acct_name);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+
+                    //DOUBLES acct_num
+
+                    else if (trans_code == false & acct_name == false & acct_num == true & amount == true) //0011
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON (icbs_trans.acct_num = scanned_trans.acct_num) AND (icbs_trans.amount = scanned_trans.amount);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+
+                    //TRIPLES 
+
+                    else if (trans_code == true & acct_name == true & acct_num == true & amount == false) //1110
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.IDFROM icbs_trans INNER JOIN scanned_trans ON(icbs_trans.acct_name = scanned_trans.acct_name) " +
+                                            "AND(icbs_trans.trans_code = scanned_trans.trans_code) AND(icbs_trans.acct_num = scanned_trans.acct_num);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+
+                    else if (trans_code == true & acct_name == true & acct_num == false & amount == true) //1101
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON(icbs_trans.amount = scanned_trans.amount) " +
+                                            "AND(icbs_trans.acct_name = scanned_trans.acct_name) AND(icbs_trans.trans_code = scanned_trans.trans_code);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+
+                    else if (trans_code == true & acct_name == false & acct_num == true & amount == true) //1011
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON(icbs_trans.acct_num = scanned_trans.acct_num) " +
+                                            "AND(icbs_trans.amount = scanned_trans.amount) AND(icbs_trans.trans_code = scanned_trans.trans_code);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+
+                    else if (trans_code == false & acct_name == true & acct_num == true & amount == true) //0111
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT icbs_trans.ID, scanned_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON(icbs_trans.acct_name = scanned_trans.acct_name) " +
+                                            "AND(icbs_trans.acct_num = scanned_trans.acct_num) AND(icbs_trans.amount = scanned_trans.amount);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
+                    }
+                    else
+                    {
+                        con.Open();
+                        OleDbCommand cmd_s1 = new OleDbCommand();
+                        cmd_s1.CommandText = "SELECT scanned_trans.ID,icbs_trans.ID FROM icbs_trans INNER JOIN scanned_trans ON(icbs_trans.trans_code = scanned_trans.trans_code) AND(icbs_trans.amount = scanned_trans.amount) " +
+                                           "AND(icbs_trans.acct_num = scanned_trans.acct_num) AND(icbs_trans.acct_name = scanned_trans.acct_name) AND(icbs_trans.trans_date = scanned_trans.trans_date);";
+                        cmd_s1.Connection = con;
+                        OleDbDataAdapter da = new OleDbDataAdapter(cmd_s1);
+                        da.Fill(ds);
+                        con.Close();
 
                     }
-                }
-            }
 
-            catch (Exception ex)
-            {
-                //MessageBox.Show(ex.Message);
-                //comment
+                    foreach (DataTable dt in ds.Tables)
+                    {
+                        foreach (DataRow dr in dt.Rows)
+                        {
+                            con.Open();
+                            string nw_cmd = "UPDATE [scanned_trans] SET match_code='R', trans_src='SCAN', match_ref= " + dr["icbs_trans.id"] + " where id=" + dr["scanned_trans.id"] + "";
+                            {
+
+                                OleDbCommand nw_command = new OleDbCommand(nw_cmd, con);
+                                nw_command.ExecuteNonQuery();
+                            }
+                            con.Close();
+
+                            con.Open();
+                            string nw_cmd_icbs = "UPDATE [icbs_trans] SET match_code='R', trans_src='ICBS', match_ref= " + dr["scanned_trans.id"] + " where id=" + dr["icbs_trans.id"] + "";
+                            {
+
+                                OleDbCommand nw_command2 = new OleDbCommand(nw_cmd_icbs, con);
+                                nw_command2.ExecuteNonQuery();
+                            }
+                            con.Close();
+                        }
+                    }
+
             }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            
         }
 
-        private void unmatching_ICBS()
+        private void unmatching_data(string tbl_fr, string tbl_to)
         {
-            conString();
-            int e;
+
             try
             {
-                con.Open();
-                OleDbCommand cmd = new OleDbCommand();
-                cmd.CommandText = "SELECT DISTINCT id FROM icbs_trans WHERE NOT EXISTS(SELECT  id FROM scanned_trans WHERE icbs_trans.trans_date = scanned_trans.trans_date and icbs_trans.acct_name = scanned_trans.acct_name and icbs_trans.amount = scanned_trans.amount " +
-                                    "and icbs_trans.acct_num = scanned_trans.acct_num and icbs_trans.trans_code = scanned_trans.trans_code);";
-                cmd.Connection = con;
-                OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
-                DataSet dsu = new DataSet();
-                dau.Fill(dsu);
-                con.Close();
+                conString();
+                //SINGLES
+                if (trans_code == true & acct_name == false & acct_num == false & amount == false) //1000
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM "+ tbl_fr +" WHERE NOT EXISTS( SELECT  id FROM "+ tbl_to +" WHERE "+ tbl_fr + ".trans_code = "+ tbl_to +".trans_code );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+            
+                else if (trans_code == false & acct_name == true & acct_num == false & amount == false) //0100
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".acct_name = " + tbl_to + ".acct_name );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+                else if (trans_code == false & acct_name == false & acct_num == true & amount == false) //0010
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".acct_num = " + tbl_to + ".acct_num );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+
+                }
+                else if (trans_code == false & acct_name == false & acct_num == false & amount == true) //0001
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".amount = " + tbl_to + ".amount );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+
+                }
+                //DOUBLES trans_code
+                else if (trans_code == true & acct_name == true & acct_num == false & amount == false) //1100
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".trans_code = " + tbl_to + ".trans_code and " + tbl_fr + ".acct_name = " + tbl_to + ".acct_name );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+                else if (trans_code == true & acct_name == false & acct_num == true & amount == false) //1010
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".trans_code = " + tbl_to + ".trans_code and " + tbl_fr + ".acct_num = " + tbl_to + ".acct_num );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+                else if (trans_code == true & acct_name == false & acct_num == false & amount == true) //1001
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".trans_code = " + tbl_to + ".trans_code and " + tbl_fr + ".amount = " + tbl_to + ".amount );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+
+                //DOUBLES acct_name
+
+                else if (trans_code == false & acct_name == true & acct_num == true & amount == false) //0110
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".acct_name = " + tbl_to + ".acct_name and " + tbl_fr + ".acct_num = " + tbl_to + ".acct_num );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+                else if (trans_code == false & acct_name == true & acct_num == false & amount == true) //0101
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".acct_name = " + tbl_to + ".acct_name and " + tbl_fr + ".amount = " + tbl_to + ".amount );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+
+                //DOUBLES acct_num
+
+                else if (trans_code == false & acct_name == false & acct_num == true & amount == true) //0011
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".acct_num = " + tbl_to + ".acct_num and " + tbl_fr + ".amount = " + tbl_to + ".amount );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+
+                //TRIPLES 
+
+                else if (trans_code == true & acct_name == true & acct_num == true & amount == false) //1110
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".trans_code = " + tbl_to + ".trans_code and " + tbl_fr + ".acct_name = " + tbl_to + ".acct_name " +
+                        "and " + tbl_fr + ".acct_num = " + tbl_to + ".acct_num );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+
+                else if (trans_code == true & acct_name == true & acct_num == false & amount == true) //1101
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".trans_code = " + tbl_to + ".trans_code and " + tbl_fr + ".acct_name = " + tbl_to + ".acct_name " +
+                        "and " + tbl_fr + ".amount = " + tbl_to + ".amount );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+
+                else if (trans_code == true & acct_name == false & acct_num == true & amount == true) //1011
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".trans_code = " + tbl_to + ".trans_code and " + tbl_fr + ".acct_num = " + tbl_to + ".acct_num " +
+                        "and " + tbl_fr + ".amount = " + tbl_to + ".amount );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+
+                else if (trans_code == false & acct_name == true & acct_num == true & amount == true) //0111
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM " + tbl_fr + " WHERE NOT EXISTS( SELECT  id FROM " + tbl_to + " WHERE " + tbl_fr + ".acct_name = " + tbl_to + ".acct_name and " + tbl_fr + ".acct_num = " + tbl_to + ".acct_num " +
+                        "and " + tbl_fr + ".amount = " + tbl_to + ".amount );";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
+                else
+                {
+                    con.Open();
+                    OleDbCommand cmd = new OleDbCommand();
+                    cmd.CommandText = "SELECT DISTINCT id FROM "+ tbl_fr +" WHERE NOT EXISTS(SELECT id FROM "+tbl_to+ " WHERE " + tbl_fr + ".trans_date = " + tbl_to + ".trans_date and " + tbl_fr + ".acct_name = " + tbl_to + ".acct_name and " + tbl_fr + ".amount = " + tbl_to + ".amount " +
+                                        "and " + tbl_fr + ".acct_num = " + tbl_to + ".acct_num and " + tbl_fr + ".trans_code = " + tbl_to + ".trans_code);";
+                    cmd.Connection = con;
+                    OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
+                    dau.Fill(dsu);
+                    con.Close();
+                }
 
                 foreach (DataTable dtu in dsu.Tables)
                 {
                     foreach (DataRow dru in dtu.Rows)
                     {
 
-                        con.Open();
-                        string nw_cmd2 = "UPDATE [icbs_trans] SET match_code='U', trans_src='ICBS' where id=" + dru["id"] + "";
+                        
+                        if (tbl_fr == "icbs_trans")
                         {
-
-                            OleDbCommand nw_command2 = new OleDbCommand(nw_cmd2, con);
-                            nw_command2.ExecuteNonQuery();
-                            //MessageBox.Show("ICBS UNMATCHED Updated");
-
+                            
+                            con.Open();
+                            string nw_cmd_i = "UPDATE [icbs_trans] SET match_code='U', trans_src='ICBS' where id=" + dru["id"] + "";
+                            {
+                                //updating ICBS
+                                OleDbCommand nw_command_i = new OleDbCommand(nw_cmd_i, con);
+                                nw_command_i.ExecuteNonQuery();
+                                
+                            }
+                            con.Close();
                         }
-                        con.Close();
-                        //MessageBox.Show(dru["id"].ToString());
+                        else
+                        {
+                            con.Open();
+                            string nw_cmd_s = "UPDATE [scanned_trans] SET match_code='U', trans_src='SCAN' where id=" + dru["id"] + "";
+                            {
+                                //updating SCANNED
+                                OleDbCommand nw_command_s = new OleDbCommand(nw_cmd_s, con);
+                                nw_command_s.ExecuteNonQuery();
+                                
+                            }
+                            con.Close();
+                        }
 
                     }
                 }
+
             }
-            catch (Exception xx)
+            catch(Exception exx)
             {
-                //MessageBox.Show(xx.Message);
+                MessageBox.Show("UNMATCHING: "+exx.Message);
             }
+            
         }
 
-        private void unmatching_SCAN()
+
+
+        private void button1_Click(object sender, EventArgs e)
         {
-            conString();
-            int e;
-            try
-            {
-                con.Open();
-                OleDbCommand cmd = new OleDbCommand();
-                cmd.CommandText = "SELECT DISTINCT id FROM scanned_trans WHERE NOT EXISTS(SELECT  id FROM icbs_trans WHERE scanned_trans.trans_date = icbs_trans.trans_date and scanned_trans.acct_name = icbs_trans.acct_name " +
-                                    "and scanned_trans.acct_num = icbs_trans.acct_num  and scanned_trans.amount = icbs_trans.amount and scanned_trans.trans_code = icbs_trans.trans_code);";
-                cmd.Connection = con;
-                OleDbDataAdapter dau = new OleDbDataAdapter(cmd);
-                DataSet dsu = new DataSet();
-                dau.Fill(dsu);
-                con.Close();
-
-                foreach (DataTable dtu in dsu.Tables)
-                {
-                    foreach (DataRow dru in dtu.Rows)
-                    {
-
-                        con.Open();
-                        string nw_cmd2 = "UPDATE [scanned_trans] SET match_code='U', trans_src='SCAN' where id=" + dru["id"] + "";
-                        {
-
-                            OleDbCommand nw_command2 = new OleDbCommand(nw_cmd2, con);
-                            nw_command2.ExecuteNonQuery();
-                            //MessageBox.Show("SCAN UNMATCHED Updated");
-
-                        }
-                        con.Close();
-                        //MessageBox.Show(dru["id"].ToString());
-
-                    }
-                }
-            }
-            catch (Exception xx)
-            {
-                //MessageBox.Show(xx.Message);
-            }
+            
         }
-
-
     }
 }
