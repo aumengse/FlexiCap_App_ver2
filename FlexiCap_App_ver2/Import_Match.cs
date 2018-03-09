@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Data.OleDb;
 using System.Configuration;
 using System.Threading;
+using System.IO;
 
 namespace FlexiCap_App_ver2
 {
@@ -46,7 +47,18 @@ namespace FlexiCap_App_ver2
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
-            bg_worker.CancelAsync();
+            if(btn_cancel.Text == "Cancel")
+            {
+                bg_worker.CancelAsync();
+            }
+            else
+            {
+                Summary_View sv = new Summary_View();
+                this.Close();
+                sv.Show();
+                
+            }
+            
         }
 
         private void bg_worker_DoWork(object sender, DoWorkEventArgs e)
@@ -93,6 +105,10 @@ namespace FlexiCap_App_ver2
                     bg_worker.ReportProgress(i);
 
                 }
+
+                
+                    
+               
                 
             }
             
@@ -116,7 +132,9 @@ namespace FlexiCap_App_ver2
             {
                 lbl_check3.Invoke(new Action(() => lbl_check3.Visible = true));
                 display("Work Successfully");
+                btn_cancel.Text = "Summary";
                 
+
             }
         }
 
@@ -160,7 +178,7 @@ namespace FlexiCap_App_ver2
                 OleDbConnection impt_con = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + db_location("scanned_path") + "; Persist Security Info=False;");
                 impt_con.Open();
                 OleDbCommand select_cmd = new OleDbCommand();
-                select_cmd.CommandText = "SELECT trans_date,acct_name,acct_num,amount,trans_code FROM [" + table_name + "] where is_import=" + false + "";
+                select_cmd.CommandText = "SELECT trans_date,acct_name,acct_num,amount,image_path,trans_code FROM [" + table_name + "] where is_import=" + false + "";
                 select_cmd.Connection = impt_con;
 
                 OleDbDataAdapter da = new OleDbDataAdapter(select_cmd);
@@ -198,7 +216,7 @@ namespace FlexiCap_App_ver2
                     //con.Close();
                     con.Open();
 
-                    String query = "INSERT INTO scanned_trans (trans_date,acct_name,acct_num,amount,trans_code) VALUES(@trans_date, @acct_name, @acct_num, @amount, @trans_code)";
+                    String query = "INSERT INTO scanned_trans (trans_date,acct_name,acct_num,amount,image_path,trans_code) VALUES(@trans_date, @acct_name, @acct_num, @amount, @image_path, @trans_code)";
                     OleDbCommand cmd = new OleDbCommand(query, con);
                     if (!string.IsNullOrWhiteSpace(is_emp_date))
                     {
@@ -208,6 +226,7 @@ namespace FlexiCap_App_ver2
                     {
                         cmd.Parameters.AddWithValue("@trans_date", DBNull.Value); // set parameterized query @a to fname parameter
                     }
+
                     if (!string.IsNullOrWhiteSpace(row.Cells[1].Value.ToString()))
                     {
                         cmd.Parameters.AddWithValue("@acct_name", row.Cells[1].Value.ToString()); // set parameterized query @b to mname parameter
@@ -217,6 +236,7 @@ namespace FlexiCap_App_ver2
                         cmd.Parameters.AddWithValue("@acct_name", DBNull.Value); // set parameterized query @b to mname parameter
                     }
                     cmd.Parameters.AddWithValue("@acct_num", row.Cells[2].Value.ToString());
+
                     if (!string.IsNullOrWhiteSpace(row.Cells[3].Value.ToString()))
                     {
                         cmd.Parameters.AddWithValue("@amount", double.Parse(row.Cells[3].Value.ToString()));
@@ -225,7 +245,16 @@ namespace FlexiCap_App_ver2
                     {
                         cmd.Parameters.AddWithValue("@amount", DBNull.Value);
                     }
-                    cmd.Parameters.AddWithValue("@trans_code", row.Cells[4].Value.ToString());
+
+                    if (!string.IsNullOrWhiteSpace(row.Cells[4].Value.ToString()))
+                    {
+                        cmd.Parameters.AddWithValue("@image_path", Path.GetFileName(row.Cells[4].Value.ToString()));
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@image_path", DBNull.Value);
+                    }
+                        cmd.Parameters.AddWithValue("@trans_code", row.Cells[5].Value.ToString());
 
                     string acct_name = row.Cells[2].Value.ToString();
 

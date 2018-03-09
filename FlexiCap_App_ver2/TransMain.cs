@@ -61,7 +61,7 @@ namespace FlexiCap_App_ver2
         private void matchingToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             Import_Match mp = new Import_Match();
-            mp.Show();
+            mp.ShowDialog();
         }
 
         private void archiveToolStripMenuItem_Click(object sender, EventArgs e)

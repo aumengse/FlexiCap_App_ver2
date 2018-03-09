@@ -41,7 +41,6 @@
             this.lbl_check2 = new System.Windows.Forms.Label();
             this.lbl_check1 = new System.Windows.Forms.Label();
             this.dg_data_imported = new System.Windows.Forms.DataGridView();
-            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dg_data_imported)).BeginInit();
             this.SuspendLayout();
@@ -168,26 +167,14 @@
             this.dg_data_imported.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dg_data_imported.Location = new System.Drawing.Point(39, 257);
             this.dg_data_imported.Name = "dg_data_imported";
-            this.dg_data_imported.Size = new System.Drawing.Size(240, 150);
+            this.dg_data_imported.Size = new System.Drawing.Size(439, 150);
             this.dg_data_imported.TabIndex = 7;
-            this.dg_data_imported.Visible = false;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(508, 31);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 8;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Import_Match
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(647, 354);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(647, 423);
             this.Controls.Add(this.dg_data_imported);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lbl_percent);
@@ -220,6 +207,5 @@
         private System.Windows.Forms.Label lbl_check2;
         private System.Windows.Forms.Label lbl_check1;
         private System.Windows.Forms.DataGridView dg_data_imported;
-        private System.Windows.Forms.Button button1;
     }
 }
