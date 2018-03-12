@@ -190,6 +190,7 @@ namespace FlexiCap_App_ver2
                             chk_amount.Checked = Convert.ToBoolean(rdr.GetValue(4).ToString());
                             tb_scanned_source.Text = rdr.GetValue(5).ToString();
                             tb_icbs_source.Text = rdr.GetValue(6).ToString();
+                            txt_image.Text = rdr.GetValue(7).ToString();
                         }
                     }
                 }

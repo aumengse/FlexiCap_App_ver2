@@ -285,7 +285,7 @@ namespace FlexiCap_App_ver2
             string cmds = "";
             try
             {
-                OleDbConnection cons = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\FlexiCap_App_ver2\Test Data\scanned_trans_unmatch.accdb; Persist Security Info=False;");
+                OleDbConnection cons = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\github\GITHUB\FlexiCap_App_ver2\Test Data\scanned_trans_unmatch.accdb; Persist Security Info=False;");
                 cons.Open();
                 if (!string.IsNullOrWhiteSpace(acct_num))
                 {

@@ -92,5 +92,11 @@ namespace FlexiCap_App_ver2
             Match_View mv = new Match_View();
             mv.ShowDialog();
         }
+
+        private void unmatchedToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Unmatch_View uv = new Unmatch_View();
+            uv.Show();
+        }
     }
 }
