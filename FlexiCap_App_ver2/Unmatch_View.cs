@@ -161,5 +161,75 @@ namespace FlexiCap_App_ver2
                 lbl_scan_total_amount.Text = scan_sum;
             }
         }
+        private static string get_image_name(string acct_name, string acct_num, string amount)
+        {
+            OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
+            Conf.conf dbcon;
+            con = new OleDbConnection();
+            dbcon = new Conf.conf();
+            con.ConnectionString = dbcon.getConnectionString();
+            string image_name = "";
+            try
+            {
+                con.Open();
+                string cmd = "SELECT image_path FROM scanned_trans where acct_name = '"+acct_name+"' and acct_num='"+acct_num+"'";
+                {
+                    OleDbCommand command = new OleDbCommand(cmd, con);
+                    OleDbDataReader rdr = command.ExecuteReader();
+                    rdr.Read();
+                    image_name = rdr.GetValue(0).ToString();
+                }
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return image_name;
+        }
+        private static string get_image_path()
+        {
+            OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
+            Conf.conf dbcon;
+            con = new OleDbConnection();
+            dbcon = new Conf.conf();
+            con.ConnectionString = dbcon.getConnectionString();
+            string img_path = "";
+            try
+            {
+                con.Open();
+                string cmd = "SELECT image_path FROM settings";
+                {
+                    OleDbCommand command = new OleDbCommand(cmd, con);
+                    OleDbDataReader rdr = command.ExecuteReader();
+                    rdr.Read();
+                    img_path = rdr.GetValue(0).ToString();
+                }
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return img_path;
+        }
+        private void btn_verify_Click(object sender, EventArgs e)
+        {
+            Verify_Data vd = new Verify_Data();
+            vd.txt_icbs_acct_name.Text = Unmatched_Icbs_Records.CheckedItems[0].SubItems[3].Text;
+            vd.txt_icbs_acct_num.Text = Unmatched_Icbs_Records.CheckedItems[0].SubItems[4].Text;
+            vd.txt_icbs_date.Text = Unmatched_Icbs_Records.CheckedItems[0].SubItems[2].Text;
+            vd.txt_icbs_amount.Text = Unmatched_Icbs_Records.CheckedItems[0].SubItems[5].Text;
+
+            string acct_name = Unmatched_Scanned_Records.CheckedItems[0].SubItems[3].Text;
+            string acct_num = Unmatched_Scanned_Records.CheckedItems[0].SubItems[4].Text;
+            string date = Unmatched_Scanned_Records.CheckedItems[0].SubItems[2].Text;
+            string amount = Unmatched_Scanned_Records.CheckedItems[0].SubItems[5].Text;
+            string image_name = get_image_name(acct_name, acct_num, amount);
+            string image_path = get_image_path();
+            string loc_image = image_path + image_name;
+            vd.pct_scanned_data.Image = Image.FromFile(@""+loc_image+"");
+            vd.ShowDialog();
+        }
     }
 }

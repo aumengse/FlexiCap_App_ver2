@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.OleDb;
+using System.IO;
 
 namespace FlexiCap_App_ver2
 {
@@ -87,7 +88,7 @@ namespace FlexiCap_App_ver2
                 //OleDbConnection con = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\PC-23\Desktop\TVVS.accdb; Persist Security Info=False;");
                 conString();
                 con.Open();
-                string cmd = "update settings set trans_code=" + chk_tran_code.Checked + ", acct_name=" + chk_acct_name.Checked + ", acct_num=" + chk_acct_num.Checked + ", amount=" + chk_amount.Checked + ", scanned_path='" + tb_scanned_source.Text + "', icbs_path='" + tb_icbs_source.Text + "'";
+                string cmd = "update settings set trans_code=" + chk_tran_code.Checked + ", acct_name=" + chk_acct_name.Checked + ", acct_num=" + chk_acct_num.Checked + ", amount=" + chk_amount.Checked + ", scanned_path='" + tb_scanned_source.Text + "', icbs_path='" + tb_icbs_source.Text + "', image_path='"+txt_image.Text+"'";
                 OleDbCommand command = new OleDbCommand(cmd, con);
                 OleDbDataReader rdr = command.ExecuteReader();
                 con.Close();
@@ -105,7 +106,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                String query = "INSERT INTO settings (trans_code,acct_name,acct_num,amount,scanned_path,icbs_path) VALUES(@trans_code, @acct_name, @acct_num, @amount, @scanned_path, @icbs_path)";
+                String query = "INSERT INTO settings (trans_code,acct_name,acct_num,amount,scanned_path,icbs_path,image_path) VALUES(@trans_code, @acct_name, @acct_num, @amount, @scanned_path, @icbs_path)";
                 OleDbCommand cmd = new OleDbCommand(query, con);
                 cmd.Parameters.AddWithValue("@trans_code", chk_tran_code.CheckState);
                 cmd.Parameters.AddWithValue("@acct_name", chk_acct_name.CheckState);
@@ -113,6 +114,8 @@ namespace FlexiCap_App_ver2
                 cmd.Parameters.AddWithValue("@amount", chk_amount.CheckState);
                 cmd.Parameters.AddWithValue("@scanned_path", tb_scanned_source.Text);
                 cmd.Parameters.AddWithValue("@icbs_path", tb_icbs_source.Text);
+                cmd.Parameters.AddWithValue("@image_path", txt_image.Text);
+
                 cmd.ExecuteNonQuery();
                 con.Close();
                 MessageBox.Show("Save Success", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -195,6 +198,32 @@ namespace FlexiCap_App_ver2
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openfile_browse_icbs = new OpenFileDialog();
+
+            openfile_browse.InitialDirectory = @"C:\";
+            openfile_browse_icbs.Title = "Browse Image";
+
+            openfile_browse.CheckFileExists = true;
+            openfile_browse_icbs.CheckPathExists = true;
+
+            openfile_browse.DefaultExt = "jpg";
+            openfile_browse.Filter = "Images (*.jpg)|*.jpg";
+            openfile_browse.FilterIndex = 2;
+            openfile_browse.RestoreDirectory = true;
+
+
+            openfile_browse.ReadOnlyChecked = true;
+            openfile_browse.ShowReadOnly = true;
+
+            if (openfile_browse.ShowDialog() == DialogResult.OK)
+            {
+                string img_path = Path.GetDirectoryName(openfile_browse.FileName);
+                txt_image.Text = img_path + @"\";
             }
         }
     }

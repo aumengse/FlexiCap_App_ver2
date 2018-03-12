@@ -42,6 +42,9 @@
             this.chk_acct_name = new System.Windows.Forms.CheckBox();
             this.chk_tran_code = new System.Windows.Forms.CheckBox();
             this.openfile_browse = new System.Windows.Forms.OpenFileDialog();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txt_image = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label4
@@ -56,7 +59,7 @@
             // 
             // btn_save
             // 
-            this.btn_save.Location = new System.Drawing.Point(504, 230);
+            this.btn_save.Location = new System.Drawing.Point(504, 265);
             this.btn_save.Name = "btn_save";
             this.btn_save.Size = new System.Drawing.Size(83, 23);
             this.btn_save.TabIndex = 54;
@@ -170,11 +173,40 @@
             // 
             this.openfile_browse.FileName = "openFileDialog1";
             // 
-            // setup_form
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(504, 226);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(83, 20);
+            this.button2.TabIndex = 58;
+            this.button2.Text = "Browse";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(19, 229);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(168, 13);
+            this.label5.TabIndex = 57;
+            this.label5.Text = "Enter location/file name of Images";
+            // 
+            // txt_image
+            // 
+            this.txt_image.Location = new System.Drawing.Point(269, 226);
+            this.txt_image.Name = "txt_image";
+            this.txt_image.Size = new System.Drawing.Size(229, 20);
+            this.txt_image.TabIndex = 56;
+            // 
+            // Setup_form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(605, 272);
+            this.ClientSize = new System.Drawing.Size(605, 310);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.txt_image);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.btn_save);
             this.Controls.Add(this.button1);
@@ -188,7 +220,7 @@
             this.Controls.Add(this.chk_acct_num);
             this.Controls.Add(this.chk_acct_name);
             this.Controls.Add(this.chk_tran_code);
-            this.Name = "setup_form";
+            this.Name = "Setup_form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "setup_form";
             this.Load += new System.EventHandler(this.setup_form_Load);
@@ -213,5 +245,8 @@
         private System.Windows.Forms.CheckBox chk_acct_name;
         private System.Windows.Forms.CheckBox chk_tran_code;
         private System.Windows.Forms.OpenFileDialog openfile_browse;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox txt_image;
     }
 }
