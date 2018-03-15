@@ -56,6 +56,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lbl_icbs_value_items = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.btn_verify = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -89,6 +90,8 @@
             this.Unmatched_Icbs_Records.TabIndex = 3;
             this.Unmatched_Icbs_Records.UseCompatibleStateImageBehavior = false;
             this.Unmatched_Icbs_Records.View = System.Windows.Forms.View.Details;
+            this.Unmatched_Icbs_Records.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.Unmatched_Icbs_Records_ItemChecked);
+            this.Unmatched_Icbs_Records.SelectedIndexChanged += new System.EventHandler(this.Unmatched_Icbs_Records_SelectedIndexChanged);
             // 
             // Check
             // 
@@ -148,6 +151,8 @@
             this.Unmatched_Scanned_Records.TabIndex = 4;
             this.Unmatched_Scanned_Records.UseCompatibleStateImageBehavior = false;
             this.Unmatched_Scanned_Records.View = System.Windows.Forms.View.Details;
+            this.Unmatched_Scanned_Records.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.Unmatched_Scanned_Records_ItemChecked);
+            this.Unmatched_Scanned_Records.SelectedIndexChanged += new System.EventHandler(this.Unmatched_Scanned_Records_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -198,6 +203,7 @@
             this.cmb_icbs_trans.Name = "cmb_icbs_trans";
             this.cmb_icbs_trans.Size = new System.Drawing.Size(121, 21);
             this.cmb_icbs_trans.TabIndex = 30;
+            this.cmb_icbs_trans.SelectedIndexChanged += new System.EventHandler(this.cmb_icbs_trans_SelectedIndexChanged);
             // 
             // label23
             // 
@@ -219,6 +225,7 @@
             this.cmb_scan_trans.Name = "cmb_scan_trans";
             this.cmb_scan_trans.Size = new System.Drawing.Size(121, 21);
             this.cmb_scan_trans.TabIndex = 28;
+            this.cmb_scan_trans.SelectedIndexChanged += new System.EventHandler(this.cmb_scan_trans_SelectedIndexChanged);
             // 
             // lbl_scan_total_amount
             // 
@@ -292,11 +299,23 @@
             this.label1.TabIndex = 32;
             this.label1.Text = "Total Items";
             // 
+            // btn_verify
+            // 
+            this.btn_verify.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_verify.Location = new System.Drawing.Point(1122, 622);
+            this.btn_verify.Name = "btn_verify";
+            this.btn_verify.Size = new System.Drawing.Size(82, 35);
+            this.btn_verify.TabIndex = 40;
+            this.btn_verify.Text = "Verify";
+            this.btn_verify.UseVisualStyleBackColor = true;
+            this.btn_verify.Click += new System.EventHandler(this.btn_verify_Click);
+            // 
             // Unmatch_View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1234, 650);
+            this.ClientSize = new System.Drawing.Size(1234, 669);
+            this.Controls.Add(this.btn_verify);
             this.Controls.Add(this.lbl_scan_total_amount);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.lbl_scan_value_items);
@@ -352,5 +371,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lbl_icbs_value_items;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btn_verify;
     }
 }

@@ -13,6 +13,9 @@ namespace FlexiCap_App_ver2
 {
     public partial class Match_View : Form
     {
+        private bool _doCheck = true;
+        private bool _doSelect = true;
+
         private OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
         private Conf.conf dbcon;
         private void conString()
@@ -145,7 +148,8 @@ namespace FlexiCap_App_ver2
         }
         private void Match_View_Load(object sender, EventArgs e)
         {
-            matched_listview_view("scanned_trans", "=", "R");
+
+            matched_listview_view("icbs_trans", "<>", "U");
             if (Matched_Records.Items.Count > 0)
             {
                 string icbs_items = items_counter("icbs_trans");
@@ -175,6 +179,155 @@ namespace FlexiCap_App_ver2
             sd.match_code = match_code;
             sd.trans_code = trans_code;
             sd.ShowDialog();
+        }
+        private static string get_match_ref(string table_name, string acct_name, string acct_num, string amount)
+        {
+            string match_ref = "";
+            try
+            {
+                OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
+                Conf.conf dbcon;
+                con = new OleDbConnection();
+                dbcon = new Conf.conf();
+                con.ConnectionString = dbcon.getConnectionString();
+                con.Open();
+                string cmd = "SELECT ID FROM " + table_name + " where acct_name='"+acct_name+"' and acct_num='"+acct_num+"' and amount="+amount.Replace(",","")+"";
+                {
+                    OleDbCommand command = new OleDbCommand(cmd, con);
+                    OleDbDataReader rdr = command.ExecuteReader();
+                    if (rdr.HasRows)
+                    {
+                        while (rdr.Read())
+                        {
+                            match_ref = rdr.GetValue(0).ToString();
+                        }
+                    }
+                }
+                con.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            return match_ref;
+        }
+        private void undo_force_match(string table_name, string field_name, string table_id)
+        {
+            try
+            {
+                conString();
+                con.Open();
+                string cmd = "update " + table_name + " set match_code='U', remarks = Null, match_ref=0 where "+field_name+"=" + table_id + "";
+                OleDbCommand command = new OleDbCommand(cmd, con);
+                OleDbDataReader rdr = command.ExecuteReader();
+                con.Close();
+                if (table_name == "icbs_trans")
+                {
+                    MessageBox.Show("Success!", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
+        }
+        private void btn_undo_fm_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string var_date = Matched_Records.CheckedItems[0].SubItems[1].Text;
+                string acct_name = Matched_Records.CheckedItems[0].SubItems[2].Text;
+                string acct_num = Matched_Records.CheckedItems[0].SubItems[3].Text;
+                string amount = Matched_Records.CheckedItems[0].SubItems[4].Text;
+                string match_ref = get_match_ref("icbs_trans", acct_name, acct_num, amount);
+
+                undo_force_match("icbs_trans", "ID", match_ref);
+                undo_force_match("scanned_trans", "match_ref", match_ref);
+
+                matched_listview_view("icbs_trans", "<>", "U");
+            }
+            catch
+            {
+                MessageBox.Show("No data selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            
+        }
+        private void check_one_item(ItemCheckedEventArgs e)
+        {
+            if (!_doCheck)
+            {
+                return;
+            }
+
+            _doCheck = false;
+
+            _doSelect = false;
+            
+            foreach (ListViewItem lvi in Matched_Records.Items)
+            { // clear all checked items except the one we are working with
+                if (lvi != e.Item)
+                {
+                    lvi.Checked = false;
+                }
+            }
+
+            _doCheck = true;
+           
+            Matched_Records.SelectedItems.Clear();
+            e.Item.Selected = e.Item.Checked;
+            e.Item.Selected = false;
+
+            _doSelect = true;
+        }
+
+        private void select_one_item()
+        {
+            if (!_doSelect)
+            {
+                return;
+            }
+
+            //suppress the ItemChecked Event
+
+            _doCheck = false;
+            foreach (ListViewItem lvi in Matched_Records.Items)
+            {
+                lvi.Checked = false;
+            }
+            
+            if (Matched_Records.SelectedItems.Count > 0)
+            {
+                string listItem = Matched_Records.SelectedItems[0].Text;
+                Matched_Records.SelectedItems[0].Checked = true;
+            }
+            _doCheck = true;
+        }
+        private void Matched_Records_ItemChecked(object sender, ItemCheckedEventArgs e)
+        {
+            check_one_item(e);
+        }
+
+        private void Matched_Records_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            select_one_item();
+        }
+
+        private void match_icbs_filter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (match_icbs_filter.Text == "Regular Match")
+            {
+                matched_listview_view("icbs_trans", "=", "R");
+            }
+            else if (match_icbs_filter.Text == "Force Match")
+            {
+                matched_listview_view("icbs_trans", "=", "F");
+            }
+            else
+            {
+                matched_listview_view("icbs_trans", "<>", "U");
+            }
         }
     }
 }

@@ -98,7 +98,7 @@
             // configurationToolStripMenuItem
             // 
             this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
-            this.configurationToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.configurationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.configurationToolStripMenuItem.Text = "Configuration";
             this.configurationToolStripMenuItem.Click += new System.EventHandler(this.configurationToolStripMenuItem_Click);
             // 
@@ -140,6 +140,7 @@
             this.unmatchedToolStripMenuItem1.Name = "unmatchedToolStripMenuItem1";
             this.unmatchedToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.unmatchedToolStripMenuItem1.Text = "Unmatched";
+            this.unmatchedToolStripMenuItem1.Click += new System.EventHandler(this.unmatchedToolStripMenuItem1_Click);
             // 
             // archivedToolStripMenuItem
             // 

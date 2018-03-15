@@ -42,6 +42,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lbl_icbs_value_items = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.btn_undo_fm = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -65,6 +66,7 @@
             this.match_icbs_filter.Name = "match_icbs_filter";
             this.match_icbs_filter.Size = new System.Drawing.Size(160, 21);
             this.match_icbs_filter.TabIndex = 27;
+            this.match_icbs_filter.SelectedIndexChanged += new System.EventHandler(this.match_icbs_filter_SelectedIndexChanged);
             // 
             // groupBox1
             // 
@@ -94,6 +96,8 @@
             this.Matched_Records.TabIndex = 6;
             this.Matched_Records.UseCompatibleStateImageBehavior = false;
             this.Matched_Records.View = System.Windows.Forms.View.Details;
+            this.Matched_Records.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.Matched_Records_ItemChecked);
+            this.Matched_Records.SelectedIndexChanged += new System.EventHandler(this.Matched_Records_SelectedIndexChanged);
             this.Matched_Records.DoubleClick += new System.EventHandler(this.Matched_Records_DoubleClick);
             // 
             // check
@@ -163,11 +167,22 @@
             this.label1.TabIndex = 29;
             this.label1.Text = "Total Items";
             // 
+            // btn_undo_fm
+            // 
+            this.btn_undo_fm.Location = new System.Drawing.Point(33, 574);
+            this.btn_undo_fm.Name = "btn_undo_fm";
+            this.btn_undo_fm.Size = new System.Drawing.Size(132, 23);
+            this.btn_undo_fm.TabIndex = 33;
+            this.btn_undo_fm.Text = "Undo Force Match";
+            this.btn_undo_fm.UseVisualStyleBackColor = true;
+            this.btn_undo_fm.Click += new System.EventHandler(this.btn_undo_fm_Click);
+            // 
             // Match_View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(656, 588);
+            this.ClientSize = new System.Drawing.Size(656, 609);
+            this.Controls.Add(this.btn_undo_fm);
             this.Controls.Add(this.lbl_icbs_total_amount);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lbl_icbs_value_items);
@@ -201,5 +216,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lbl_icbs_value_items;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btn_undo_fm;
     }
 }
