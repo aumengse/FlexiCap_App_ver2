@@ -90,6 +90,8 @@
             this.Unmatched_Icbs_Records.TabIndex = 3;
             this.Unmatched_Icbs_Records.UseCompatibleStateImageBehavior = false;
             this.Unmatched_Icbs_Records.View = System.Windows.Forms.View.Details;
+            this.Unmatched_Icbs_Records.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.Unmatched_Icbs_Records_ItemChecked);
+            this.Unmatched_Icbs_Records.SelectedIndexChanged += new System.EventHandler(this.Unmatched_Icbs_Records_SelectedIndexChanged);
             // 
             // Check
             // 
@@ -149,6 +151,8 @@
             this.Unmatched_Scanned_Records.TabIndex = 4;
             this.Unmatched_Scanned_Records.UseCompatibleStateImageBehavior = false;
             this.Unmatched_Scanned_Records.View = System.Windows.Forms.View.Details;
+            this.Unmatched_Scanned_Records.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.Unmatched_Scanned_Records_ItemChecked);
+            this.Unmatched_Scanned_Records.SelectedIndexChanged += new System.EventHandler(this.Unmatched_Scanned_Records_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
@@ -199,6 +203,7 @@
             this.cmb_icbs_trans.Name = "cmb_icbs_trans";
             this.cmb_icbs_trans.Size = new System.Drawing.Size(121, 21);
             this.cmb_icbs_trans.TabIndex = 30;
+            this.cmb_icbs_trans.SelectedIndexChanged += new System.EventHandler(this.cmb_icbs_trans_SelectedIndexChanged);
             // 
             // label23
             // 
@@ -220,6 +225,7 @@
             this.cmb_scan_trans.Name = "cmb_scan_trans";
             this.cmb_scan_trans.Size = new System.Drawing.Size(121, 21);
             this.cmb_scan_trans.TabIndex = 28;
+            this.cmb_scan_trans.SelectedIndexChanged += new System.EventHandler(this.cmb_scan_trans_SelectedIndexChanged);
             // 
             // lbl_scan_total_amount
             // 

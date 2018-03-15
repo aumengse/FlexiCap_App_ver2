@@ -73,6 +73,7 @@
             this.btn_force_match.TabIndex = 17;
             this.btn_force_match.Text = "Force Match";
             this.btn_force_match.UseVisualStyleBackColor = true;
+            this.btn_force_match.Click += new System.EventHandler(this.btn_force_match_Click);
             // 
             // lbl_icbs_acct_num
             // 
