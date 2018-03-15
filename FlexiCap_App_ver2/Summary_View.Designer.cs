@@ -29,8 +29,6 @@
         private void InitializeComponent()
         {
             this.gb_scanned = new System.Windows.Forms.GroupBox();
-            this.scn_total_amt = new System.Windows.Forms.Label();
-            this.scn_total_count = new System.Windows.Forms.Label();
             this.scn_wdl_total_amt = new System.Windows.Forms.Label();
             this.scn_depo_total_amt = new System.Windows.Forms.Label();
             this.scn_wdl_total_count = new System.Windows.Forms.Label();
@@ -64,6 +62,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
+            this.scn_total_count = new System.Windows.Forms.Label();
+            this.scn_total_amt = new System.Windows.Forms.Label();
             this.gb_scanned.SuspendLayout();
             this.gb_icbs.SuspendLayout();
             this.gb_variance.SuspendLayout();
@@ -87,26 +87,6 @@
             this.gb_scanned.TabIndex = 0;
             this.gb_scanned.TabStop = false;
             this.gb_scanned.Text = "Scanned ";
-            // 
-            // scn_total_amt
-            // 
-            this.scn_total_amt.AutoSize = true;
-            this.scn_total_amt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.scn_total_amt.Location = new System.Drawing.Point(198, 341);
-            this.scn_total_amt.Name = "scn_total_amt";
-            this.scn_total_amt.Size = new System.Drawing.Size(31, 15);
-            this.scn_total_amt.TabIndex = 8;
-            this.scn_total_amt.Text = "0.00";
-            // 
-            // scn_total_count
-            // 
-            this.scn_total_count.AutoSize = true;
-            this.scn_total_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.scn_total_count.Location = new System.Drawing.Point(39, 341);
-            this.scn_total_count.Name = "scn_total_count";
-            this.scn_total_count.Size = new System.Drawing.Size(14, 15);
-            this.scn_total_count.TabIndex = 7;
-            this.scn_total_count.Text = "0";
             // 
             // scn_wdl_total_amt
             // 
@@ -451,6 +431,26 @@
             this.label27.TabIndex = 8;
             this.label27.Text = "TOTAL";
             // 
+            // scn_total_count
+            // 
+            this.scn_total_count.AutoSize = true;
+            this.scn_total_count.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scn_total_count.Location = new System.Drawing.Point(39, 341);
+            this.scn_total_count.Name = "scn_total_count";
+            this.scn_total_count.Size = new System.Drawing.Size(14, 15);
+            this.scn_total_count.TabIndex = 7;
+            this.scn_total_count.Text = "0";
+            // 
+            // scn_total_amt
+            // 
+            this.scn_total_amt.AutoSize = true;
+            this.scn_total_amt.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.scn_total_amt.Location = new System.Drawing.Point(198, 341);
+            this.scn_total_amt.Name = "scn_total_amt";
+            this.scn_total_amt.Size = new System.Drawing.Size(31, 15);
+            this.scn_total_amt.TabIndex = 8;
+            this.scn_total_amt.Text = "0.00";
+            // 
             // Summary_View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -484,8 +484,6 @@
         #endregion
 
         private System.Windows.Forms.GroupBox gb_scanned;
-        private System.Windows.Forms.Label scn_total_amt;
-        private System.Windows.Forms.Label scn_total_count;
         private System.Windows.Forms.Label scn_wdl_total_amt;
         private System.Windows.Forms.Label scn_depo_total_amt;
         private System.Windows.Forms.Label scn_wdl_total_count;
@@ -519,5 +517,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.Label scn_total_amt;
+        private System.Windows.Forms.Label scn_total_count;
     }
 }
