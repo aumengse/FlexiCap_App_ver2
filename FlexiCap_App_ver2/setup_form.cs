@@ -34,7 +34,8 @@ namespace FlexiCap_App_ver2
             openfile_browse.InitialDirectory = @"C:\";
             openfile_browse_icbs.Title = "Browse Database";
 
-            openfile_browse.CheckFileExists = true;
+            openfile_browse.ValidateNames = false;
+            openfile_browse.CheckFileExists = false;
             openfile_browse_icbs.CheckPathExists = true;
 
             openfile_browse.DefaultExt = "accdb";
@@ -204,27 +205,12 @@ namespace FlexiCap_App_ver2
 
         private void button2_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openfile_browse_icbs = new OpenFileDialog();
-
-            openfile_browse.InitialDirectory = @"C:\";
-            openfile_browse_icbs.Title = "Browse Image";
-
-            openfile_browse.CheckFileExists = true;
-            openfile_browse_icbs.CheckPathExists = true;
-
-            openfile_browse.DefaultExt = "jpg";
-            openfile_browse.Filter = "Images (*.jpg)|*.jpg";
-            openfile_browse.FilterIndex = 2;
-            openfile_browse.RestoreDirectory = true;
-
-
-            openfile_browse.ReadOnlyChecked = true;
-            openfile_browse.ShowReadOnly = true;
-
-            if (openfile_browse.ShowDialog() == DialogResult.OK)
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.RootFolder = Environment.SpecialFolder.Desktop;
+            fbd.ShowNewFolderButton = false;
+            if (fbd.ShowDialog() == DialogResult.OK)
             {
-                string img_path = Path.GetDirectoryName(openfile_browse.FileName);
-                txt_image.Text = img_path + @"\";
+                txt_image.Text = fbd.SelectedPath + @"\";
             }
         }
     }

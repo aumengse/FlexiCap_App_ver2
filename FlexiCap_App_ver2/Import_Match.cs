@@ -143,16 +143,20 @@ namespace FlexiCap_App_ver2
             MessageBox.Show(text);
 
         }
-
-        public string db_location(string filepath)
+        
+        private static string db_location(string filepath)
         {
+            OleDbConnection connection = new OleDbConnection(); //Initialize OleDBConnection
+            Conf.conf dbconnection;
+            connection = new OleDbConnection();
+            dbconnection = new Conf.conf();
+            connection.ConnectionString = dbconnection.getConnectionString();
             string holder = "";
-            conString();
 
-            string cmd = "SELECT scanned_path,icbs_path from settings";
+            string command_text = "SELECT scanned_path,icbs_path from settings";
             {
-                con.Open();
-                OleDbCommand command = new OleDbCommand(cmd, con);
+                connection.Open();
+                OleDbCommand command = new OleDbCommand(command_text, connection);
                 OleDbDataReader rdr = command.ExecuteReader();
                 rdr.Read();
                 
@@ -165,7 +169,7 @@ namespace FlexiCap_App_ver2
                     holder = rdr.GetValue(1).ToString();
                 }
                     
-                con.Close();
+                connection.Close();
             }
             return holder;
         }
@@ -282,18 +286,22 @@ namespace FlexiCap_App_ver2
 
         private void mark_imported_data(string table_name, string acct_num)
         {
-            string cmds = "";
+            //string cmds = "";
+            string wew = acct_num;
+            string loc = db_location("scanned_path");
             try
             {
-                OleDbConnection cons = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=D:\github\GITHUB\FlexiCap_App_ver2\Test Data\scanned_trans_unmatch.accdb; Persist Security Info=False;");
+                OleDbConnection cons = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source='" + loc + "'; Persist Security Info=False;");
                 cons.Open();
-                if (!string.IsNullOrWhiteSpace(acct_num))
-                {
-                    cmds = "update [" + table_name + "] set is_import=" + true + " where acct_num='" + acct_num + "'";
-                }
+                OleDbCommand commands = new OleDbCommand();
+                commands.Connection = cons;
+                string cmds = "update " + table_name + " set is_import=@is_import where acct_num=@acct_num";
 
-                OleDbCommand commands = new OleDbCommand(cmds, cons);
-                OleDbDataReader redr = commands.ExecuteReader();
+                commands.Parameters.AddWithValue("@is_import", true);
+                commands.Parameters.AddWithValue("@acct_num", acct_num);
+                commands.CommandText = cmds;
+                commands.ExecuteNonQuery();
+                cons.Close();
 
                 cons.Close();
 
