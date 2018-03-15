@@ -102,6 +102,12 @@
       <DependentUpon>Archiving_Trans.cs</DependentUpon>
     </Compile>
     <Compile Include="conf.cs" />
+    <Compile Include="Dashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dashboard.Designer.cs">
+      <DependentUpon>Dashboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Initialize_DB.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -175,6 +181,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Archiving_Trans.resx">
       <DependentUpon>Archiving_Trans.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dashboard.resx">
+      <DependentUpon>Dashboard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Initialize_DB.resx">
       <DependentUpon>Initialize_DB.cs</DependentUpon>

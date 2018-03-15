@@ -165,16 +165,17 @@
             // dg_data_imported
             // 
             this.dg_data_imported.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dg_data_imported.Location = new System.Drawing.Point(39, 257);
+            this.dg_data_imported.Location = new System.Drawing.Point(21, 329);
             this.dg_data_imported.Name = "dg_data_imported";
             this.dg_data_imported.Size = new System.Drawing.Size(439, 150);
             this.dg_data_imported.TabIndex = 7;
+            this.dg_data_imported.Visible = false;
             // 
             // Import_Match
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(647, 423);
+            this.ClientSize = new System.Drawing.Size(647, 329);
             this.Controls.Add(this.dg_data_imported);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lbl_percent);

@@ -18,11 +18,14 @@ namespace FlexiCap_App_ver2
     {
         private OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
         private Conf.conf dbcon;
+        public string date_today { get; set; }
+
         public Summary_View()
         {
             InitializeComponent();
             this.CenterToScreen();
             this.Show();
+            
         }
 
         private void conString()
@@ -34,6 +37,9 @@ namespace FlexiCap_App_ver2
 
         private void Summary_View_Load(object sender, EventArgs e)
         {
+            date_today = DateTime.Today.ToString("MM/dd/yyyy");
+
+            MessageBox.Show(date_today.ToString());
             count_items("scanned_trans");
             count_items("icbs_trans");
 
@@ -49,6 +55,8 @@ namespace FlexiCap_App_ver2
             sum_breakdown("scanned_trans", "WDL");
             sum_breakdown("icbs_trans", "DEPO");
             sum_breakdown("icbs_trans", "WDL");
+
+            variance();
         }
 
 
@@ -89,7 +97,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string scan_depo_count = "SELECT COUNT(id) from " + table_name + " where trans_code='" + trans_code + "' and match_code is Null";
+                string scan_depo_count = "SELECT COUNT(id) from " + table_name + " where trans_code='" + trans_code + "' and trans_date="+ date_today +"";
                 {
                     OleDbCommand command = new OleDbCommand(scan_depo_count, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -119,7 +127,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string scan_depo_count = "SELECT COUNT(id) from " + table_name + " where trans_code='" + trans_code + "' and match_code is Null";
+                string scan_depo_count = "SELECT COUNT(id) from " + table_name + " where trans_code='" + trans_code + "' and trans_date=" + date_today + "";
                 {
                     OleDbCommand command = new OleDbCommand(scan_depo_count, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -152,7 +160,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string cmd = "SELECT SUM(amount) from "+ table_name + " where match_code is Null";
+                string cmd = "SELECT SUM(amount) from "+ table_name + " where trans_date=" + date_today + "";
                 {
                     OleDbCommand command = new OleDbCommand(cmd, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -184,7 +192,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string scan_depo = "SELECT SUM(amount) from "+ table_name +" where trans_code='"+ trans_code +"' and match_code is Null";
+                string scan_depo = "SELECT SUM(amount) from "+ table_name +" where trans_code='"+ trans_code + "' and trans_date=" + date_today + "";
                 {
                     OleDbCommand command = new OleDbCommand(scan_depo, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -218,6 +226,30 @@ namespace FlexiCap_App_ver2
             {
 
             }
+
+        }
+
+        private void variance()
+        {
+            double total_amt_depo, total_amt_wdl, total_amt;
+            int depo, wdl, total_ct;
+
+            depo = Math.Abs(int.Parse(scn_depo_total_count.Text)- int.Parse(icbs_depo_total_count.Text));
+            wdl = Math.Abs(int.Parse(scn_wdl_total_count.Text) - int.Parse(icbs_wdl_total_count.Text));
+            total_ct = Math.Abs(int.Parse(scn_total_count.Text) - int.Parse(icbs_total_count.Text));
+
+            total_amt_depo = Math.Abs(double.Parse(scn_depo_total_amt.Text) - double.Parse(icbs_depo_total_amt.Text));
+            total_amt_wdl = Math.Abs(double.Parse(scn_depo_total_amt.Text) - double.Parse(icbs_depo_total_amt.Text));
+            total_amt = Math.Abs(double.Parse(scn_total_amt.Text) - double.Parse(icbs_total_amt.Text));
+
+            var_depo_total_count.Text = depo.ToString();
+            var_wdl_total_count.Text = wdl.ToString();
+            var_total_count.Text = total_ct.ToString();
+
+            var_depo_total_amt.Text = String.Format("{0:n}", Double.Parse(total_amt_depo.ToString()));
+            var_wdl_total_amt.Text = String.Format("{0:n}", Double.Parse(total_amt_wdl.ToString()));
+            var_total_amt.Text = String.Format("{0:n}", Double.Parse(total_amt.ToString()));
+
 
         }
 
