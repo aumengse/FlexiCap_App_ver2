@@ -16,7 +16,7 @@ namespace FlexiCap_App_ver2
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Dashboard());
+            Application.Run(new TransMain());
         }
     }
 }

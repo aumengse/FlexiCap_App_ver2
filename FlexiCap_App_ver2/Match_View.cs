@@ -148,7 +148,7 @@ namespace FlexiCap_App_ver2
         }
         private void Match_View_Load(object sender, EventArgs e)
         {
-
+            match_icbs_filter.SelectedIndex = 0;
             matched_listview_view("icbs_trans", "<>", "U");
             if (Matched_Records.Items.Count > 0)
             {
@@ -211,6 +211,7 @@ namespace FlexiCap_App_ver2
             }
             return match_ref;
         }
+        
         private void undo_force_match(string table_name, string field_name, string table_id)
         {
             try
@@ -235,24 +236,32 @@ namespace FlexiCap_App_ver2
         }
         private void btn_undo_fm_Click(object sender, EventArgs e)
         {
-            try
+            string match_code = Matched_Records.CheckedItems[0].SubItems[5].Text;
+            if (match_code == "F")
             {
-                string var_date = Matched_Records.CheckedItems[0].SubItems[1].Text;
-                string acct_name = Matched_Records.CheckedItems[0].SubItems[2].Text;
-                string acct_num = Matched_Records.CheckedItems[0].SubItems[3].Text;
-                string amount = Matched_Records.CheckedItems[0].SubItems[4].Text;
-                string match_ref = get_match_ref("icbs_trans", acct_name, acct_num, amount);
+                try
+                {
+                    string var_date = Matched_Records.CheckedItems[0].SubItems[1].Text;
+                    string acct_name = Matched_Records.CheckedItems[0].SubItems[2].Text;
+                    string acct_num = Matched_Records.CheckedItems[0].SubItems[3].Text;
+                    string amount = Matched_Records.CheckedItems[0].SubItems[4].Text;
 
-                undo_force_match("icbs_trans", "ID", match_ref);
-                undo_force_match("scanned_trans", "match_ref", match_ref);
+                    string match_ref = get_match_ref("icbs_trans", acct_name, acct_num, amount);
 
-                matched_listview_view("icbs_trans", "<>", "U");
+                    undo_force_match("icbs_trans", "ID", match_ref);
+                    undo_force_match("scanned_trans", "match_ref", match_ref);
+
+                    matched_listview_view("icbs_trans", "<>", "U");
+                }
+                catch
+                {
+                    MessageBox.Show("No data selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
-            catch
+            else
             {
-                MessageBox.Show("No data selected!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("You can't undo regular match data","Warning",MessageBoxButtons.OK,MessageBoxIcon.Warning);
             }
-            
         }
         private void check_one_item(ItemCheckedEventArgs e)
         {
