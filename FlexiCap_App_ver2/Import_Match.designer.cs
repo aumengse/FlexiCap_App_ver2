@@ -41,6 +41,7 @@
             this.lbl_check2 = new System.Windows.Forms.Label();
             this.lbl_check1 = new System.Windows.Forms.Label();
             this.dg_data_imported = new System.Windows.Forms.DataGridView();
+            this.btn_dashboard = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dg_data_imported)).BeginInit();
             this.SuspendLayout();
@@ -171,11 +172,23 @@
             this.dg_data_imported.TabIndex = 7;
             this.dg_data_imported.Visible = false;
             // 
+            // btn_dashboard
+            // 
+            this.btn_dashboard.Enabled = false;
+            this.btn_dashboard.Location = new System.Drawing.Point(498, 41);
+            this.btn_dashboard.Name = "btn_dashboard";
+            this.btn_dashboard.Size = new System.Drawing.Size(85, 38);
+            this.btn_dashboard.TabIndex = 8;
+            this.btn_dashboard.Text = "Dashboard";
+            this.btn_dashboard.UseVisualStyleBackColor = true;
+            this.btn_dashboard.Click += new System.EventHandler(this.btn_dashboard_Click);
+            // 
             // Import_Match
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(647, 329);
+            this.Controls.Add(this.btn_dashboard);
             this.Controls.Add(this.dg_data_imported);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.lbl_percent);
@@ -208,5 +221,6 @@
         private System.Windows.Forms.Label lbl_check2;
         private System.Windows.Forms.Label lbl_check1;
         private System.Windows.Forms.DataGridView dg_data_imported;
+        private System.Windows.Forms.Button btn_dashboard;
     }
 }

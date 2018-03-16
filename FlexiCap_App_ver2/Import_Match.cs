@@ -133,6 +133,7 @@ namespace FlexiCap_App_ver2
                 lbl_check3.Invoke(new Action(() => lbl_check3.Visible = true));
                 display("Work Successfully");
                 btn_cancel.Text = "Summary";
+                btn_dashboard.Enabled = true;
                 
 
             }
@@ -810,6 +811,14 @@ namespace FlexiCap_App_ver2
         private void button1_Click(object sender, EventArgs e)
         {
             
+        }
+
+        private void btn_dashboard_Click(object sender, EventArgs e)
+        {
+            
+            Dashboard d = new Dashboard();
+            d.ShowDialog();
+            this.Close();
         }
     }
 }

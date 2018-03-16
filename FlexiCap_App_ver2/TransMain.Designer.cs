@@ -118,7 +118,7 @@
             // 
             this.summaryToolStripMenuItem.Name = "summaryToolStripMenuItem";
             this.summaryToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.summaryToolStripMenuItem.Text = "Summary";
+            this.summaryToolStripMenuItem.Text = "Dashboard";
             this.summaryToolStripMenuItem.Click += new System.EventHandler(this.summaryToolStripMenuItem_Click);
             // 
             // importedToolStripMenuItem1
@@ -147,6 +147,7 @@
             this.archivedToolStripMenuItem.Name = "archivedToolStripMenuItem";
             this.archivedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.archivedToolStripMenuItem.Text = "Archived";
+            this.archivedToolStripMenuItem.Click += new System.EventHandler(this.archivedToolStripMenuItem_Click);
             // 
             // actionsToolStripMenuItem
             // 
@@ -160,14 +161,14 @@
             // matchingToolStripMenuItem
             // 
             this.matchingToolStripMenuItem.Name = "matchingToolStripMenuItem";
-            this.matchingToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.matchingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.matchingToolStripMenuItem.Text = "Matching";
             this.matchingToolStripMenuItem.Click += new System.EventHandler(this.matchingToolStripMenuItem_Click_1);
             // 
             // archiveToolStripMenuItem
             // 
             this.archiveToolStripMenuItem.Name = "archiveToolStripMenuItem";
-            this.archiveToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.archiveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.archiveToolStripMenuItem.Text = "Archive";
             this.archiveToolStripMenuItem.Click += new System.EventHandler(this.archiveToolStripMenuItem_Click);
             // 

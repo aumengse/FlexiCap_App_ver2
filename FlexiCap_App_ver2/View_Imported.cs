@@ -18,6 +18,7 @@ namespace FlexiCap_App_ver2
     {
         private OleDbConnection con = new OleDbConnection(); //Initialize OleDBConnection
         private Conf.conf dbcon;
+        public DateTime date_today { get; set; }
 
         public View_Imported()
         {
@@ -35,6 +36,10 @@ namespace FlexiCap_App_ver2
         private void View_Imported_Load(object sender, EventArgs e)
         {
             this.CenterToScreen();
+
+            string xx_date = DateTime.Today.ToString("MM/dd/yyyy");
+            date_today = DateTime.Parse(xx_date);
+
             load_data("scanned_trans");
             load_data("icbs_trans");
 
@@ -60,7 +65,7 @@ namespace FlexiCap_App_ver2
             {
                 conString();
                 con.Open();
-                string cmd = "SELECT * FROM " + table_name +" where match_code is Null ORDER BY trans_code,trans_date,acct_name;";
+                string cmd = "SELECT * FROM " + table_name + " where [trans_date]=#" + date_today + "#  ORDER BY trans_code,trans_date,acct_name;";
                 {
                     OleDbCommand command = new OleDbCommand(cmd, con);
                     OleDbDataReader rdr = command.ExecuteReader();                   
@@ -157,7 +162,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string cmd = "SELECT COUNT(id) from "+ tb_name +" where match_code is Null";
+                string cmd = "SELECT COUNT(id) from "+ tb_name + " where [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(cmd, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -190,7 +195,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string scan_depo_count = "SELECT COUNT(id) from "+ tb_name +" where trans_code='"+ trans_code +"' and match_code is Null";
+                string scan_depo_count = "SELECT COUNT(id) from "+ tb_name +" where trans_code='"+ trans_code + "' and [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(scan_depo_count, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -220,7 +225,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string scan_depo_count = "SELECT COUNT(id) from " + tb_name + " where trans_code='" + trans_code + "' and match_code is Null";
+                string scan_depo_count = "SELECT COUNT(id) from " + tb_name + " where trans_code='" + trans_code + "' and [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(scan_depo_count, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -252,7 +257,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string cmd = "SELECT SUM(amount) from scanned_trans where match_code is Null";
+                string cmd = "SELECT SUM(amount) from scanned_trans where [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(cmd, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -277,7 +282,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string query = "SELECT SUM(amount) from icbs_trans where match_code is Null";
+                string query = "SELECT SUM(amount) from icbs_trans where [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(query, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -300,7 +305,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string scan_depo = "SELECT SUM(amount) from scanned_trans where trans_code='DEPO' and match_code is Null";
+                string scan_depo = "SELECT SUM(amount) from scanned_trans where trans_code='DEPO' and [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(scan_depo, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -311,7 +316,7 @@ namespace FlexiCap_App_ver2
                 con.Close();
 
                 con.Open();
-                string scan_wdl = "SELECT SUM(amount) from scanned_trans where trans_code='WDL' and match_code is Null";
+                string scan_wdl = "SELECT SUM(amount) from scanned_trans where trans_code='WDL' and [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(scan_wdl, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -335,7 +340,7 @@ namespace FlexiCap_App_ver2
             try
             {
                 con.Open();
-                string icbs_depo = "SELECT SUM(amount) from icbs_trans where trans_code='DEPO' and match_code is Null";
+                string icbs_depo = "SELECT SUM(amount) from icbs_trans where trans_code='DEPO' and [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(icbs_depo, con);
                     OleDbDataReader rdr = command.ExecuteReader();
@@ -346,7 +351,7 @@ namespace FlexiCap_App_ver2
                 con.Close();
 
                 con.Open();
-                string icbs_wdl = "SELECT SUM(amount) from icbs_trans where trans_code='WDL' and match_code is Null";
+                string icbs_wdl = "SELECT SUM(amount) from icbs_trans where trans_code='WDL' and [trans_date]=#" + date_today + "#";
                 {
                     OleDbCommand command = new OleDbCommand(icbs_wdl, con);
                     OleDbDataReader rdr = command.ExecuteReader();

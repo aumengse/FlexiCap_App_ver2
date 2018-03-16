@@ -66,7 +66,8 @@ namespace FlexiCap_App_ver2
 
         private void archiveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            Archiving_Trans at = new Archiving_Trans();
+            at.ShowDialog();
         }
 
         private void importedToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -83,8 +84,8 @@ namespace FlexiCap_App_ver2
 
         private void summaryToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Summary_View sv = new Summary_View();
-            sv.Show();
+            Dashboard d = new Dashboard();
+            d.ShowDialog();
         }
 
         private void matchedToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -97,6 +98,12 @@ namespace FlexiCap_App_ver2
         {
             Unmatch_View uv = new Unmatch_View();
             uv.Show();
+        }
+
+        private void archivedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Archive_View av = new Archive_View();
+            av.ShowDialog();
         }
     }
 }
