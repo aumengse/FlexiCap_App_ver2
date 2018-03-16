@@ -131,7 +131,7 @@ namespace FlexiCap_App_ver2
             else
             {
                 lbl_check3.Invoke(new Action(() => lbl_check3.Visible = true));
-                display("Work Successfully");
+                MessageBox.Show("Work Successfully","Information",MessageBoxButtons.OK, MessageBoxIcon.Information);
                 btn_cancel.Text = "Summary";
                 
 

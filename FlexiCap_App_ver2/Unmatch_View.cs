@@ -243,9 +243,11 @@ namespace FlexiCap_App_ver2
         }
         private void btn_verify_Click(object sender, EventArgs e)
         {
+            string icbs_trans_code = Unmatched_Icbs_Records.CheckedItems[0].SubItems[1].Text;
+            string scan_trans_code = Unmatched_Scanned_Records.CheckedItems[0].SubItems[1].Text;
             try
             {
-                try
+                if( icbs_trans_code == scan_trans_code)
                 {
                     try
                     {
@@ -262,25 +264,25 @@ namespace FlexiCap_App_ver2
                         string image_name = get_image_name(acct_name, acct_num, amount);
                         string image_path = get_image_path();
                         string loc_image = image_path + image_name;
-                        
+
                         vd.pct_scanned_data.Image = Image.FromFile(@"" + loc_image + "");
                         vd.acct_name = acct_name;
                         vd.acct_num = acct_num;
                         vd.amount = amount;
                         vd.scan_date = scan_date;
-                        vd.scan_trans_code = get_trans_code("scanned_trans",acct_name,acct_num,amount);
+                        vd.scan_trans_code = get_trans_code("scanned_trans", acct_name, acct_num, amount);
                         vd.scan_date = scan_date;
-                        vd.icbs_trans_code = get_trans_code("icbs_trans",icbs_acct_name,icbs_acct_num,icbs_amount);
+                        vd.icbs_trans_code = get_trans_code("icbs_trans", icbs_acct_name, icbs_acct_num, icbs_amount);
                         vd.Show();
                         this.Close();
-                        
+
                     }
                     catch
                     {
                         MessageBox.Show("Please Select Record To Verify", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
-                catch
+                else
                 {
                     MessageBox.Show("Select Data with the same trasaction code.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }

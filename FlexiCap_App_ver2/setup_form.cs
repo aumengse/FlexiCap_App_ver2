@@ -169,6 +169,7 @@ namespace FlexiCap_App_ver2
             {
                 insert_settings();
             }
+            this.Close();
         }
 
         private void setup_form_Load(object sender, EventArgs e)
